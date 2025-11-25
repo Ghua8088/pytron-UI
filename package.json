@@ -1,0 +1,21 @@
+{
+  "name": "pytron-ui",
+  "version": "0.1.0",
+  "description": "UI components for Pytron applications",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "echo \"Error: no build specified\" && exit 1"
+  },
+  "keywords": [
+    "pytron",
+    "ui",
+    "react"
+  ],
+  "author": "",
+  "license": "ISC",
+  "peerDependencies": {
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
+  }
+}
