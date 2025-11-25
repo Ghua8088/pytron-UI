@@ -1,6 +1,8 @@
 import React from 'react';
 
 const TitleBar = ({ title, icon, onClose, onMinimize, onMaximize, style, children }) => {
+  const [isMaximized, setIsMaximized] = React.useState(false);
+
   const handleMinimize = () => {
     if (window.pywebview?.api?.minimize) {
       window.pywebview.api.minimize();
@@ -8,13 +10,13 @@ const TitleBar = ({ title, icon, onClose, onMinimize, onMaximize, style, childre
     if (onMinimize) onMinimize();
   };
 
-  const handleMaximize = () => {
-    if (window.pywebview?.api?.maximize) {
-        // Simple maximize for now. 
-        // Ideally we toggle between maximize and restore.
-        // But without state from backend, it's hard to know.
-        // We can try to call toggle_fullscreen if preferred.
-        window.pywebview.api.maximize();
+  const handleMaximizeToggle = () => {
+    if (isMaximized) {
+      if (window.pywebview?.api?.restore) window.pywebview.api.restore();
+      setIsMaximized(false);
+    } else {
+      if (window.pywebview?.api?.maximize) window.pywebview.api.maximize();
+      setIsMaximized(true);
     }
     if (onMaximize) onMaximize();
   };
@@ -26,8 +28,12 @@ const TitleBar = ({ title, icon, onClose, onMinimize, onMaximize, style, childre
     if (onClose) onClose();
   };
 
+  const handleDoubleClick = () => {
+    handleMaximizeToggle();
+  };
+
   return (
-    <div className="pywebview-drag-region" style={{
+    <div className="pywebview-drag-region" onDoubleClick={handleDoubleClick} style={{
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
@@ -35,7 +41,7 @@ const TitleBar = ({ title, icon, onClose, onMinimize, onMaximize, style, childre
       backgroundColor: '#202020',
       color: '#eeeeee',
       userSelect: 'none',
-      WebkitAppRegion: 'drag', // For WebView2/Electron
+      WebkitAppRegion: 'drag', // Use native draggable region like Electron
       padding: '0 10px',
       fontFamily: 'Segoe UI, sans-serif',
       fontSize: '12px',
@@ -49,7 +55,7 @@ const TitleBar = ({ title, icon, onClose, onMinimize, onMaximize, style, childre
       </div>
       <div style={{ display: 'flex', WebkitAppRegion: 'no-drag', height: '100%' }}>
         <WindowControlBtn onClick={handleMinimize}>&#9472;</WindowControlBtn>
-        <WindowControlBtn onClick={handleMaximize}>&#9633;</WindowControlBtn>
+        <WindowControlBtn onClick={handleMaximizeToggle}>&#9633;</WindowControlBtn>
         <WindowControlBtn onClick={handleClose} isClose>&#10005;</WindowControlBtn>
       </div>
     </div>
