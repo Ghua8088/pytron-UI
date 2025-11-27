@@ -1,29 +1,30 @@
 import React from 'react';
+import pytron from 'pytron-client';
 
 const TitleBar = ({ title, icon, onClose, onMinimize, onMaximize, style, children }) => {
   const [isMaximized, setIsMaximized] = React.useState(false);
 
   const handleMinimize = () => {
-    if (window.pywebview?.api?.minimize) {
-      window.pywebview.api.minimize();
+    if (pytron?.minimize) {
+      pytron.minimize();
     }
     if (onMinimize) onMinimize();
   };
 
   const handleMaximizeToggle = () => {
     if (isMaximized) {
-      if (window.pywebview?.api?.restore) window.pywebview.api.restore();
+      if (pytron?.restore) pytron.restore();
       setIsMaximized(false);
     } else {
-      if (window.pywebview?.api?.maximize) window.pywebview.api.maximize();
+      if (pytron?.maximize) pytron.maximize();
       setIsMaximized(true);
     }
     if (onMaximize) onMaximize();
   };
 
   const handleClose = () => {
-    if (window.pywebview?.api?.close) {
-      window.pywebview.api.close();
+    if (pytron?.close) {
+      pytron.close();
     }
     if (onClose) onClose();
   };

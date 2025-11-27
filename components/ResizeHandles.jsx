@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import pytron from 'pytron-client';
 
 const ResizeHandles = () => {
   const isResizing = useRef(false);
@@ -23,10 +24,8 @@ const ResizeHandles = () => {
       if (newWidth < 200) newWidth = 200;
       if (newHeight < 100) newHeight = 100;
 
-      if (window.pywebview?.api?.resize) {
-        // We use a small throttle or just call it. 
-        // Since this is JS driving Python, it might be slightly laggy but functional.
-        await window.pywebview.api.resize(Math.round(newWidth), Math.round(newHeight));
+      if (pytron?.resize) {
+        await pytron.resize(Math.round(newWidth), Math.round(newHeight));
       }
     };
 
@@ -51,11 +50,11 @@ const ResizeHandles = () => {
     startPos.current = { x: e.screenX, y: e.screenY };
     
     // Get current size from backend for accuracy, or fallback to window.outerWidth
-    if (window.pywebview?.api?.get_size) {
-        const size = await window.pywebview.api.get_size();
-        startSize.current = { width: size.width, height: size.height };
+    if (pytron?.get_size) {
+      const size = await pytron.get_size();
+      startSize.current = { width: size.width, height: size.height };
     } else {
-        startSize.current = { width: window.outerWidth, height: window.outerHeight };
+      startSize.current = { width: window.outerWidth, height: window.outerHeight };
     }
     
     document.body.style.cursor = dir === 'se' ? 'nwse-resize' : (dir === 'e' ? 'ew-resize' : 'ns-resize');

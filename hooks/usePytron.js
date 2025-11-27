@@ -1,24 +1,21 @@
 import { useState, useEffect } from 'react';
+import pytron from 'pytron-client';
 
 const usePytron = () => {
-  const [api, setApi] = useState(null);
+  const [api, setApi] = useState(pytron);
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    const checkApi = () => {
+    const checkReady = () => {
+      // If pywebview is present assume backend available
       if (window.pywebview?.api) {
-        setApi(window.pywebview.api);
         setIsReady(true);
       }
     };
 
-    if (window.pywebview?.api) {
-      checkApi();
-    } else {
-      window.addEventListener('pywebviewready', checkApi);
-    }
-
-    return () => window.removeEventListener('pywebviewready', checkApi);
+    checkReady();
+    window.addEventListener('pywebviewready', checkReady);
+    return () => window.removeEventListener('pywebviewready', checkReady);
   }, []);
 
   return { api, isReady };

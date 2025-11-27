@@ -1,17 +1,18 @@
 import { useEffect } from 'react';
+import pytron from 'pytron-client';
 
 const ShortcutHandler = () => {
   useEffect(() => {
     let registeredShortcuts = [];
 
     const fetchShortcuts = async () => {
-      if (window.pywebview?.api?.get_registered_shortcuts) {
-        registeredShortcuts = await window.pywebview.api.get_registered_shortcuts();
+      if (pytron?.get_registered_shortcuts) {
+        registeredShortcuts = await pytron.get_registered_shortcuts();
       }
     };
 
     const handleKeyDown = async (e) => {
-      if (!window.pywebview?.api?.trigger_shortcut) return;
+      if (!pytron?.trigger_shortcut) return;
 
       // Build key combo string
       const parts = [];
@@ -35,7 +36,7 @@ const ShortcutHandler = () => {
       }
 
       // Trigger Python
-      const handled = await window.pywebview.api.trigger_shortcut(combo);
+      const handled = await pytron.trigger_shortcut(combo);
       if (handled) {
         e.preventDefault();
       }
