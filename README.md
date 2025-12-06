@@ -1,5 +1,4 @@
-# Banner: pytron.png
-![Pytron](pytron.png)
+![Pytron](pytron-banner.png)
 # Pytron UI
 
 A set of React components and hooks for building Pytron applications.

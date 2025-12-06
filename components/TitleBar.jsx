@@ -35,6 +35,7 @@ const TitleBar = ({
   children,
   overlay = false,
   glass = false,
+  useNativeControls = false, // New prop to support native DWM controls
   height = '32px',
   backgroundColor = '#202020',
   color = '#eeeeee'
@@ -78,7 +79,7 @@ const TitleBar = ({
     color: color,
     userSelect: 'none',
     WebkitAppRegion: 'drag',
-    padding: '0 0 0 16px',
+    padding: useNativeControls ? '0 140px 0 16px' : '0 0 0 16px', // Add padding for native controls
     fontFamily: '"Segoe UI", "Roboto", sans-serif',
     fontSize: '13px',
     position: overlay ? 'fixed' : 'relative',
@@ -96,7 +97,7 @@ const TitleBar = ({
       style={containerStyle}
       onDoubleClick={handleMaximizeToggle}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', overflow: 'hidden' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', overflow: 'hidden', flex: 1 }}>
         {icon && <img src={icon} alt="" style={{ width: '18px', height: '18px', objectFit: 'contain' }} />}
         <span style={{ fontWeight: 500, letterSpacing: '0.3px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
           {title || 'Pytron App'}
@@ -104,17 +105,19 @@ const TitleBar = ({
         {children}
       </div>
 
-      <div style={{ display: 'flex', height: '100%', WebkitAppRegion: 'no-drag' }}>
-        <WindowControlBtn onClick={handleMinimize}>
-          <Icons.Minimize />
-        </WindowControlBtn>
-        <WindowControlBtn onClick={handleMaximizeToggle}>
-          {isMaximized ? <Icons.Restore /> : <Icons.Maximize />}
-        </WindowControlBtn>
-        <WindowControlBtn onClick={handleClose} isClose>
-          <Icons.Close />
-        </WindowControlBtn>
-      </div>
+      {!useNativeControls && (
+        <div style={{ display: 'flex', height: '100%', WebkitAppRegion: 'no-drag' }}>
+          <WindowControlBtn onClick={handleMinimize}>
+            <Icons.Minimize />
+          </WindowControlBtn>
+          <WindowControlBtn onClick={handleMaximizeToggle}>
+            {isMaximized ? <Icons.Restore /> : <Icons.Maximize />}
+          </WindowControlBtn>
+          <WindowControlBtn onClick={handleClose} isClose>
+            <Icons.Close />
+          </WindowControlBtn>
+        </div>
+      )}
     </div>
   );
 };
