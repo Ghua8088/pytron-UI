@@ -13,16 +13,16 @@ const Button = ({ children, onClick, variant = 'primary', style, ...props }) => 
   };
 
   const variants = {
-    primary: { backgroundColor: '#0078d4', color: '#fff' },
-    secondary: { backgroundColor: '#444', color: '#fff' },
-    danger: { backgroundColor: '#e81123', color: '#fff' },
-    ghost: { backgroundColor: 'transparent', color: '#fff' }
+    primary: { backgroundColor: 'var(--pytron-primary, #0078d4)', color: 'var(--pytron-primary-fg, #fff)' },
+    secondary: { backgroundColor: 'var(--pytron-secondary, #444)', color: 'var(--pytron-fg, #fff)' },
+    danger: { backgroundColor: 'var(--pytron-danger, #e81123)', color: '#fff' },
+    ghost: { backgroundColor: 'transparent', color: 'var(--pytron-fg, #fff)' } // Ghost usually takes text color
   };
 
   return (
     <button
       onClick={onClick}
-      style={{ ...baseStyle, ...variants[variant] }}
+      style={{ ...baseStyle, ...(variants[variant] || variants.primary) }}
       {...props}
     >
       {children}

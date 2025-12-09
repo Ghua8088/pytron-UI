@@ -2,23 +2,26 @@ import { useState, useEffect } from 'react';
 import pytron from 'pytron-client';
 
 const usePytron = () => {
-  const [api, setApi] = useState(pytron);
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    const checkReady = () => {
-      // If pywebview is present assume backend available
-      if (window.pywebview?.api) {
-        setIsReady(true);
+    let mounted = true;
+
+    const init = async () => {
+      try {
+        await pytron.waitForBackend(2000);
+        if (mounted) setIsReady(true);
+      } catch (e) {
+        console.warn("Pytron backend not detected immediately.", e);
+        if (mounted) setIsReady(false);
       }
     };
+    init();
 
-    checkReady();
-    window.addEventListener('pywebviewready', checkReady);
-    return () => window.removeEventListener('pywebviewready', checkReady);
+    return () => { mounted = false; };
   }, []);
 
-  return { api, isReady };
+  return { api: pytron, isReady };
 };
 
 export default usePytron;

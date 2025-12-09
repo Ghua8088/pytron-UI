@@ -17,13 +17,14 @@ const Dialog = ({ isOpen, title, message, onConfirm, onCancel, confirmText = "OK
       zIndex: 1000
     }}>
       <div style={{
-        backgroundColor: '#2b2b2b',
-        color: '#fff',
+        backgroundColor: 'var(--pytron-surface, #2b2b2b)',
+        color: 'var(--pytron-fg, #fff)',
         padding: '20px',
         borderRadius: '8px',
         minWidth: '300px',
         maxWidth: '80%',
         boxShadow: '0 4px 6px rgba(0,0,0,0.3)',
+        border: '1px solid var(--pytron-border, #333)',
         fontFamily: 'Segoe UI, sans-serif'
       }}>
         {title && <h3 style={{ marginTop: 0, marginBottom: '10px', fontSize: '18px' }}>{title}</h3>}
@@ -34,7 +35,7 @@ const Dialog = ({ isOpen, title, message, onConfirm, onCancel, confirmText = "OK
               {cancelText}
             </button>
           )}
-          <button onClick={onConfirm} style={{ ...buttonStyle, backgroundColor: '#0078d4' }}>
+          <button onClick={onConfirm} style={{ ...buttonStyle, backgroundColor: 'var(--pytron-primary, #0078d4)', color: 'var(--pytron-primary-fg, #fff)' }}>
             {confirmText}
           </button>
         </div>
@@ -47,8 +48,8 @@ const buttonStyle = {
   padding: '8px 16px',
   border: 'none',
   borderRadius: '4px',
-  backgroundColor: '#444',
-  color: '#fff',
+  backgroundColor: 'var(--pytron-secondary, #444)',
+  color: 'var(--pytron-fg, #fff)',
   cursor: 'pointer',
   fontSize: '14px',
   transition: 'background-color 0.2s'

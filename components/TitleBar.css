@@ -1,0 +1,138 @@
+/* src/components/TitleBar.css */
+.pytron-titlebar {
+  width: 100%;
+  height: 32px;
+  background-color: var(--pytron-bg, #1e1e1e);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  user-select: none;
+  color: var(--pytron-fg, #cccccc);
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 13px;
+  border-bottom: 1px solid var(--pytron-border, #333);
+}
+
+/* The drag region */
+.drag-region {
+  flex-grow: 1;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding-left: 12px;
+  overflow: hidden;
+  /* Prevent spillover */
+}
+
+/* --- Windows Style Controls --- */
+.window-controls {
+  display: flex;
+  height: 100%;
+  -webkit-app-region: no-drag;
+  z-index: 2000;
+}
+
+.control-btn {
+  width: 46px;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.control-btn:hover {
+  background-color: var(--pytron-secondary, #333333);
+}
+
+.control-btn.close:hover {
+  background-color: var(--pytron-danger, #e81123);
+  /* Windows Red */
+  color: white;
+}
+
+/* SVG Styling */
+.icon {
+  width: 10px;
+  height: 10px;
+  fill: currentColor;
+}
+
+
+/* --- Mac Style Controls --- */
+.pytron-titlebar.mac {
+  padding-left: 10px;
+  /* Space for traffic lights on left */
+  /* If title is centered, we might need different logic, but default flex acts okay */
+}
+
+.pytron-titlebar.mac .window-controls.mac {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding-right: 12px;
+  height: 100%;
+}
+
+.mac-btn {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.mac-btn .icon {
+  display: none;
+  /* Hide icons by default on mac, show on hover usually, or just colors */
+  width: 8px;
+  height: 8px;
+  fill: rgba(0, 0, 0, 0.6);
+}
+
+.mac-btn:hover .icon {
+  display: block;
+}
+
+/* Colors - Mac colors are fairly standard so maybe keep them fixed or provide specific vars? 
+   Let's keep them fixed for now as they are OS standard, but allow overrides if one really wants.
+*/
+.mac-btn.close {
+  background-color: #ff5f56;
+  border: 1px solid #e0443e;
+}
+
+.mac-btn.minimize {
+  background-color: #ffbd2e;
+  border: 1px solid #dea123;
+}
+
+.mac-btn.maximize {
+  background-color: #27c93f;
+  border: 1px solid #1aab29;
+}
+
+/* Hover States (slightly darker or active look) */
+.mac-btn.close:active {
+  background-color: #bf4c45;
+}
+
+.mac-btn.minimize:active {
+  background-color: #bf8e22;
+}
+
+.mac-btn.maximize:active {
+  background-color: #1f9f31;
+}
+
+/* Mac title alignment shifts */
+.pytron-titlebar.mac .drag-region {
+  padding-left: 4px;
+  /* Less padding since controls are there */
+}
