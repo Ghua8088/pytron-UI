@@ -19,7 +19,18 @@ const MenuBar = ({ menus, style }) => {
   }, []);
 
   return (
-    <div ref={menuRef} style={{ display: 'flex', background: 'var(--pytron-bg, #333)', color: 'var(--pytron-fg, #fff)', fontSize: '13px', userSelect: 'none', ...style }}>
+    <div
+      ref={menuRef}
+      style={{
+        display: 'flex',
+        background: 'var(--pytron-bg, #333)',
+        color: 'var(--pytron-fg, #fff)',
+        fontSize: '13px',
+        userSelect: 'none',
+        WebkitAppRegion: 'no-drag',
+        ...style
+      }}
+    >
       {menus.map((menu, index) => (
         <div key={index} style={{ position: 'relative' }}>
           <div

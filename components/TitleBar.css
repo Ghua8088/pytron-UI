@@ -11,6 +11,7 @@
   font-family: 'Segoe UI', sans-serif;
   font-size: 13px;
   border-bottom: 1px solid var(--pytron-border, #333);
+  position: relative; /* allow absolute menus to escape the titlebar */
 }
 
 /* The drag region */
@@ -20,8 +21,24 @@
   display: flex;
   align-items: center;
   padding-left: 12px;
-  overflow: hidden;
-  /* Prevent spillover */
+  overflow: visible; /* Allow dropdowns/menus to overflow outside the titlebar */
+  -webkit-app-region: drag; /* Keep drag behaviour on the empty drag area */
+}
+
+/* Interactive children inside the drag region must opt-out of dragging so menus/buttons are clickable */
+.drag-region button,
+.drag-region input,
+.drag-region a,
+.drag-region select,
+.drag-region textarea,
+.drag-region [role="menu"],
+.drag-region [role="menuitem"],
+.drag-region .menu,
+.drag-region .menubar,
+.drag-region .menu-item,
+.drag-region .dropdown,
+.drag-region *[data-no-drag] {
+  -webkit-app-region: no-drag;
 }
 
 /* --- Windows Style Controls --- */

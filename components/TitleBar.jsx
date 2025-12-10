@@ -4,7 +4,7 @@ import './TitleBar.css';
 import SnapGrid from './SnapGrid';
 import pytron from 'pytron-client';
 
-const TitleBar = ({ title = "Pytron App", children, variant = "windows", onMinimize, onMaximize, onClose }) => {
+const TitleBar = ({ title = "Pytron App", children, variant = "windows", icon = "🐍", onMinimize, onMaximize, onClose }) => {
   // variant: 'windows' | 'mac'
   const [isMaximized, setIsMaximized] = useState(false);
   const [showSnapMenu, setShowSnapMenu] = useState(false);
@@ -133,7 +133,7 @@ const TitleBar = ({ title = "Pytron App", children, variant = "windows", onMinim
       <div className="drag-region" onMouseDown={handleDrag}>
         {/* If Mac, we usually don't show the icon next to traffic lights, but we can if title requires it.
             For now, let's keep the optional icon. */}
-        {variant !== 'mac' && <span style={{ marginRight: 8 }}>🐍</span>}
+        {variant !== 'mac' && <span style={{ marginRight: 8 }}>{icon}</span>}
 
         <span style={{ fontWeight: variant === 'mac' ? '600' : '400' }}>{title}</span>
 
