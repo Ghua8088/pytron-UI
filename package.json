@@ -1,9 +1,14 @@
 {
   "name": "pytron-ui",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "UI components for Pytron applications",
   "type": "module",
-  "main": "index.js",
+  "main": "web-components/index.js",
+  "exports": {
+    ".": "./web-components/index.js",
+    "./react": "./react/index.js",
+    "./web-components/*": "./web-components/*"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "echo \"Error: no build specified\" && exit 1"
@@ -11,17 +16,22 @@
   "keywords": [
     "pytron",
     "ui",
-    "react"
+    "react",
+    "lit",
+    "web-components"
   ],
-  "author": "",
+  "author": "Ghua8088",
   "license": "ISC",
   "peerDependencies": {
     "react": ">=16.8.0",
     "react-dom": ">=16.8.0"
   },
   "dependencies": {
+    "@lit/react": "^1.0.8",
     "framer-motion": "^12.23.25",
+    "lit": "^3.3.1",
+    "lucide": "^0.559.0",
     "lucide-react": "^0.556.0",
-    "pytron-client": "file:../pytron-client/package"
+    "pytron-client": "^0.1.7"
   }
 }
