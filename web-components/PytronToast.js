@@ -9,11 +9,11 @@ const ErrorIcon = html`<svg width="20" height="20" viewBox="0 0 24 24" fill="non
 // The PytronToaster is a container that users place once in their app.
 // It listens to 'pytron-toast' events or method calls.
 export class PytronToaster extends LitElement {
-    static properties = {
-        toasts: { type: Array, state: true }
-    };
+  static properties = {
+    toasts: { type: Array, state: true }
+  };
 
-    static styles = css`
+  static styles = css`
     :host {
       position: fixed;
       bottom: 24px;
@@ -94,87 +94,87 @@ export class PytronToaster extends LitElement {
     }
   `;
 
-    constructor() {
-        super();
-        this.toasts = [];
+  constructor() {
+    super();
+    this.toasts = [];
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    // Listen for custom event 'pytron-toast' on window
+    window.addEventListener('pytron-toast', this._handleToastEvent.bind(this));
+    // Listen for pytron backend notifications
+    window.addEventListener('pytron:notification', this._handleBackendNotification.bind(this));
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    window.removeEventListener('pytron-toast', this._handleToastEvent.bind(this));
+    window.removeEventListener('pytron:notification', this._handleBackendNotification.bind(this));
+  }
+
+  // Allow static access for easy calls: PytronToaster.toast('Msg')
+  // Note: This requires <pytron-toaster> to be in DOM.
+  static toast(message, options = {}) {
+    window.dispatchEvent(new CustomEvent('pytron-toast', { detail: { message, ...options } }));
+  }
+
+  _handleToastEvent(e) {
+    const { message, title, type = 'info', duration = 5000 } = e.detail;
+    this.addToast(message, { title, type, duration });
+  }
+
+  _handleBackendNotification(e) {
+    const { message, title, type = 'info', duration = 5000 } = e.detail || {};
+    this.addToast(message, { title, type, duration });
+  }
+
+  addToast(message, options = {}) {
+    const id = Date.now().toString() + Math.random();
+    const newToast = {
+      id,
+      message,
+      title: options.title,
+      type: options.type || 'info', // info, success, warning, error
+      duration: options.duration || 5000,
+      exiting: false
+    };
+
+    // Immutable update
+    this.toasts = [...this.toasts, newToast];
+
+    if (newToast.duration > 0) {
+      setTimeout(() => {
+        this._startExit(id);
+      }, newToast.duration);
     }
+  }
 
-    connectedCallback() {
-        super.connectedCallback();
-        // Listen for custom event 'pytron-toast' on window
-        window.addEventListener('pytron-toast', this._handleToastEvent.bind(this));
-        // Listen for pytron backend notifications
-        window.addEventListener('pytron:notification', this._handleBackendNotification.bind(this));
+  _startExit(id) {
+    this.toasts = this.toasts.map(t => t.id === id ? { ...t, exiting: true } : t);
+    setTimeout(() => {
+      this._removeToast(id);
+    }, 200); // Match animation duration
+  }
+
+  _removeToast(id) {
+    this.toasts = this.toasts.filter(t => t.id !== id);
+  }
+
+  _getIcon(type) {
+    switch (type) {
+      case 'success': return { icon: SuccessIcon, color: 'var(--pytron-success, #107c10)' };
+      case 'error': return { icon: ErrorIcon, color: 'var(--pytron-danger, #e81123)' };
+      case 'warning': return { icon: WarningIcon, color: 'var(--pytron-warning, #d83b01)' };
+      default: return { icon: InfoIcon, color: 'var(--pytron-primary, #0078d4)' };
     }
+  }
 
-    disconnectedCallback() {
-        super.disconnectedCallback();
-        window.removeEventListener('pytron-toast', this._handleToastEvent.bind(this));
-        window.removeEventListener('pytron:notification', this._handleBackendNotification.bind(this));
-    }
-
-    // Allow static access for easy calls: PytronToaster.toast('Msg')
-    // Note: This requires <pytron-toaster> to be in DOM.
-    static toast(message, options = {}) {
-        window.dispatchEvent(new CustomEvent('pytron-toast', { detail: { message, ...options } }));
-    }
-
-    _handleToastEvent(e) {
-        const { message, title, type = 'info', duration = 5000 } = e.detail;
-        this.addToast(message, { title, type, duration });
-    }
-
-    _handleBackendNotification(e) {
-        const { message, title, type = 'info', duration = 5000 } = e.detail || {};
-        this.addToast(message, { title, type, duration });
-    }
-
-    addToast(message, options = {}) {
-        const id = Date.now().toString() + Math.random();
-        const newToast = {
-            id,
-            message,
-            title: options.title,
-            type: options.type || 'info', // info, success, warning, error
-            duration: options.duration || 5000,
-            exiting: false
-        };
-
-        // Immutable update
-        this.toasts = [...this.toasts, newToast];
-
-        if (newToast.duration > 0) {
-            setTimeout(() => {
-                this._startExit(id);
-            }, newToast.duration);
-        }
-    }
-
-    _startExit(id) {
-        this.toasts = this.toasts.map(t => t.id === id ? { ...t, exiting: true } : t);
-        setTimeout(() => {
-            this._removeToast(id);
-        }, 200); // Match animation duration
-    }
-
-    _removeToast(id) {
-        this.toasts = this.toasts.filter(t => t.id !== id);
-    }
-
-    _getIcon(type) {
-        switch (type) {
-            case 'success': return { icon: SuccessIcon, color: 'var(--pytron-success, #107c10)' };
-            case 'error': return { icon: ErrorIcon, color: 'var(--pytron-danger, #e81123)' };
-            case 'warning': return { icon: WarningIcon, color: 'var(--pytron-warning, #d83b01)' };
-            default: return { icon: InfoIcon, color: 'var(--pytron-primary, #0078d4)' };
-        }
-    }
-
-    render() {
-        return html`
+  render() {
+    return html`
       ${this.toasts.map(toast => {
-            const { icon, color } = this._getIcon(toast.type);
-            return html`
+      const { icon, color } = this._getIcon(toast.type);
+      return html`
           <div 
             class="toast-item ${toast.exiting ? 'exiting' : ''}" 
             style="border-left: 4px solid ${color}"
@@ -190,9 +190,9 @@ export class PytronToaster extends LitElement {
             </button>
           </div>
         `;
-        })}
+    })}
     `;
-    }
+  }
 }
 
 customElements.define('pytron-toaster', PytronToaster);

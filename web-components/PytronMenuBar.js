@@ -1,4 +1,4 @@
-  import { LitElement, html, css } from 'lit';
+import { LitElement, html, css } from 'lit';
 
 export class PytronMenuBar extends LitElement {
   static properties = {
@@ -17,12 +17,19 @@ export class PytronMenuBar extends LitElement {
       /* Inherited from parent usually, but defaults here */
       color: var(--pytron-fg, #fff);
       font-size: 13px;
+      /* IMPORTANT: Allow dropdowns to overflow */
+      overflow: visible; 
+      z-index: 99999;
     }
 
     .bar {
       display: flex;
-      background: var(--pytron-bg, #333);
+      background: transparent; /* Changed from variable to transparent to blend with titlebar */
       -webkit-app-region: no-drag;
+    }
+
+    .menu-wrapper {
+      position: relative; /* Anchor for absolute dropdown */
     }
 
     .menu-trigger {

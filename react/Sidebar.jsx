@@ -65,3 +65,11 @@ export const SidebarHeader = ({ children }) => (
         {children}
     </div>
 );
+
+export const SidebarContent = ({ children, style, ...props }) => {
+    return (
+        <div style={{ flex: 1, ...style }} {...props}>
+            {children}
+        </div>
+    );
+};

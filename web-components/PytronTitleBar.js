@@ -3,20 +3,21 @@ import pytron from 'pytron-client';
 import './PytronSnapGrid.js'; // Ensure SnapGrid is registered
 
 export class PytronTitleBar extends LitElement {
-    static properties = {
-        title: { type: String },
-        variant: { type: String }, // 'windows' | 'mac'
-        icon: { type: String },
-        isMaximized: { type: Boolean, state: true },
-        showSnapMenu: { type: Boolean, state: true }
-    };
+  static properties = {
+    title: { type: String },
+    variant: { type: String }, // 'windows' | 'mac'
+    icon: { type: String },
+    isMaximized: { type: Boolean, state: true },
+    showSnapMenu: { type: Boolean, state: true }
+  };
 
-    static styles = css`
+  static styles = css`
     :host {
       display: block;
       width: 100%;
-      position: sticky;
+      position: fixed; /* Changed from sticky to fixed */
       top: 0;
+      left: 0;
       z-index: 9999;
       font-family: 'Segoe UI', sans-serif;
     }
@@ -27,7 +28,7 @@ export class PytronTitleBar extends LitElement {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: var(--pytron-titlebar-bg, #1e1e1e);
+      background: var(--pytron-titlebar-bg, var(--pytron-bg, #1e1e1e));
       color: var(--pytron-fg, #fff);
       user-select: none;
       box-sizing: border-box;
@@ -106,74 +107,74 @@ export class PytronTitleBar extends LitElement {
     .window-controls.mac:hover .mac-btn .icon { opacity: 1; }
   `;
 
-    constructor() {
-        super();
-        this.title = "Pytron App";
-        this.variant = "windows";
-        this.icon = "🐍";
-        this.isMaximized = false;
-        this.showSnapMenu = false;
-        this._hoverTimeout = null;
+  constructor() {
+    super();
+    this.title = "Pytron App";
+    this.variant = "windows";
+    this.icon = "🐍";
+    this.isMaximized = false;
+    this.showSnapMenu = false;
+    this._hoverTimeout = null;
+  }
+
+  // --- ACTIONS ---
+
+  async _handleDrag(e) {
+    if (e.button !== 0) return; // Only left click
+
+    try {
+      if (pytron && typeof pytron.waitForBackend === 'function') {
+        try { await pytron.waitForBackend(2000); } catch (e) { /* ignore */ }
+      }
+      if (pytron && pytron.drag) {
+        await pytron.drag();
+      } else if (window.pytron_drag) {
+        await window.pytron_drag();
+      }
+    } catch (err) {
+      console.warn('[Pytron] Drag failed:', err);
     }
+  }
 
-    // --- ACTIONS ---
+  async _minimize() {
+    this.dispatchEvent(new CustomEvent('minimize', { bubbles: true, composed: true }));
+    try {
+      if (pytron?.minimize) await pytron.minimize();
+      else if (window.pytron_minimize) await window.pytron_minimize();
+    } catch (err) { console.warn('Minimize failed:', err); }
+  }
 
-    async _handleDrag(e) {
-        if (e.button !== 0) return; // Only left click
+  async _toggleMaximize() {
+    this.dispatchEvent(new CustomEvent('maximize', { bubbles: true, composed: true }));
+    try {
+      if (pytron?.toggle_maximize) await pytron.toggle_maximize();
+      else if (window.pytron_toggle_maximize) await window.pytron_toggle_maximize();
+    } catch (err) { console.warn('Maximize failed:', err); }
+    this.isMaximized = !this.isMaximized;
+  }
 
-        try {
-            if (pytron && typeof pytron.waitForBackend === 'function') {
-                try { await pytron.waitForBackend(2000); } catch (e) { /* ignore */ }
-            }
-            if (pytron && pytron.drag) {
-                await pytron.drag();
-            } else if (window.pytron_drag) {
-                await window.pytron_drag();
-            }
-        } catch (err) {
-            console.warn('[Pytron] Drag failed:', err);
-        }
-    }
+  async _closeApp() {
+    this.dispatchEvent(new CustomEvent('close', { bubbles: true, composed: true }));
+    try {
+      if (pytron?.close) await pytron.close();
+      else if (window.pytron_close) await window.pytron_close();
+    } catch (err) { console.warn('Close failed:', err); }
+  }
 
-    async _minimize() {
-        this.dispatchEvent(new CustomEvent('minimize', { bubbles: true, composed: true }));
-        try {
-            if (pytron?.minimize) await pytron.minimize();
-            else if (window.pytron_minimize) await window.pytron_minimize();
-        } catch (err) { console.warn('Minimize failed:', err); }
-    }
+  // --- HOVER LOGIC FOR SNAP MENU ---
+  _handleMouseEnterMax() {
+    if (this.variant === 'mac') return;
+    this._hoverTimeout = setTimeout(() => {
+      this.showSnapMenu = true;
+    }, 500);
+  }
 
-    async _toggleMaximize() {
-        this.dispatchEvent(new CustomEvent('maximize', { bubbles: true, composed: true }));
-        try {
-            if (pytron?.toggle_maximize) await pytron.toggle_maximize();
-            else if (window.pytron_toggle_maximize) await window.pytron_toggle_maximize();
-        } catch (err) { console.warn('Maximize failed:', err); }
-        this.isMaximized = !this.isMaximized;
-    }
+  _handleMouseLeaveMax() {
+    clearTimeout(this._hoverTimeout);
+  }
 
-    async _closeApp() {
-        this.dispatchEvent(new CustomEvent('close', { bubbles: true, composed: true }));
-        try {
-            if (pytron?.close) await pytron.close();
-            else if (window.pytron_close) await window.pytron_close();
-        } catch (err) { console.warn('Close failed:', err); }
-    }
-
-    // --- HOVER LOGIC FOR SNAP MENU ---
-    _handleMouseEnterMax() {
-        if (this.variant === 'mac') return;
-        this._hoverTimeout = setTimeout(() => {
-            this.showSnapMenu = true;
-        }, 500);
-    }
-
-    _handleMouseLeaveMax() {
-        clearTimeout(this._hoverTimeout);
-    }
-
-    render() {
-        return html`
+  render() {
+    return html`
       <div class="pytron-titlebar ${this.variant}">
         
         <!-- MAC TRAFFIC LIGHTS (If Variant is Mac) -->
@@ -191,14 +192,14 @@ export class PytronTitleBar extends LitElement {
         
          <!-- SNAP GRID -->
         ${this.showSnapMenu && this.variant === 'windows'
-                ? html`<pytron-snap-grid @close="${() => this.showSnapMenu = false}"></pytron-snap-grid>`
-                : ''}
+        ? html`<pytron-snap-grid @close="${() => this.showSnapMenu = false}"></pytron-snap-grid>`
+        : ''}
       </div>
     `;
-    }
+  }
 
-    _renderWindowsControls() {
-        return html`
+  _renderWindowsControls() {
+    return html`
       <div class="window-controls" @mousedown="${(e) => e.stopPropagation()}">
         <div class="control-btn" @click="${this._minimize}" title="Minimize">
           <svg class="icon" viewBox="0 0 10 1"><path d="M0 0h10v1H0z" /></svg>
@@ -218,17 +219,17 @@ export class PytronTitleBar extends LitElement {
         </div>
       </div>
     `;
-    }
+  }
 
-    _renderMacControls() {
-        return html`
+  _renderMacControls() {
+    return html`
         <div class="window-controls mac" @mousedown="${(e) => e.stopPropagation()}">
             <div class="mac-btn close" @click="${this._closeApp}"><svg class="icon"><path d="M..."/></svg></div>
             <div class="mac-btn minimize" @click="${this._minimize}"><svg class="icon"><path d="M..."/></svg></div>
             <div class="mac-btn maximize" @click="${this._toggleMaximize}"><svg class="icon"><path d="M..."/></svg></div>
         </div>
       `;
-    }
+  }
 }
 
 customElements.define('pytron-titlebar', PytronTitleBar);
