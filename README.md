@@ -1,4 +1,4 @@
-![Pytron](https://raw.githubusercontent.com/Ghua8088/pytron-UI/main/pytron-banner.png)
+![Pytron](https://raw.githubusercontent.com/Ghua8088/pytron-UI/master/pytron-banner.png)
 # Pytron UI
 
 A set of React components and hooks for building Pytron applications.
@@ -30,7 +30,7 @@ function App() {
 }
 ```
 # example
-![TitleBar](https://raw.githubusercontent.com/Ghua8088/pytron-UI/main/titlebar.png)
+![TitleBar](https://raw.githubusercontent.com/Ghua8088/pytron-UI/master/titlebar.png)
 
 ### MenuBar
 
@@ -61,7 +61,7 @@ function App() {
 }
 ```
 # example
-![MenuBar](https://raw.githubusercontent.com/Ghua8088/pytron-UI/main/menu.png)
+![MenuBar](https://raw.githubusercontent.com/Ghua8088/pytron-UI/master/menu.png)
 ### Dialog
 
 A modal dialog.
@@ -88,7 +88,7 @@ function App() {
 }
 ```
 # example
-![Dialog](https://raw.githubusercontent.com/Ghua8088/pytron-UI/main/dialog.png)
+![Dialog](https://raw.githubusercontent.com/Ghua8088/pytron-UI/master/dialog.png)
 ### usePytron Hook
 
 Access the Pytron backend API.
@@ -133,7 +133,7 @@ function App() {
 }
 ```
 # example
-![Sidebar](https://raw.githubusercontent.com/Ghua8088/pytron-UI/main/sidebar.png)
+![Sidebar](https://raw.githubusercontent.com/Ghua8088/pytron-UI/master/sidebar.png)
 
 ### Button
 
@@ -147,7 +147,7 @@ import { PytronButton } from 'pytron-ui/react';
 <PytronButton variant="danger">Delete</PytronButton>
 ```
 # example
-![Button](https://raw.githubusercontent.com/Ghua8088/pytron-UI/main/buttons.png)
+![Button](https://raw.githubusercontent.com/Ghua8088/pytron-UI/master/buttons.png)
 
 ### Input & Controls
 
@@ -169,7 +169,7 @@ import { PytronInput, PytronSelect, PytronSwitch } from 'pytron-ui/react';
 <PytronSwitch checked={isOn} onChange={setIsOn} />
 ```
 # example
-![Inputs](https://raw.githubusercontent.com/Ghua8088/pytron-UI/main/inputs.png)
+![Inputs](https://raw.githubusercontent.com/Ghua8088/pytron-UI/master/inputs.png)
 
 ### Feedback
 
@@ -189,7 +189,7 @@ const { addToast } = PytronToaster();
 addToast('Saved successfully', { type: 'success' });
 ```
 # example
-![Feedback](https://raw.githubusercontent.com/Ghua8088/pytron-UI/main/feedback.png)
+![Feedback](https://raw.githubusercontent.com/Ghua8088/pytron-UI/master/feedback.png)
 
 ### Layout
 
@@ -211,7 +211,7 @@ import { PytronCard, PytronTabs } from 'pytron-ui/react';
 />
 ```
 # example
-![Layout](https://raw.githubusercontent.com/Ghua8088/pytron-UI/main/layout.png)
+![Layout](https://raw.githubusercontent.com/Ghua8088/pytron-UI/master/layout.png)
 
 ### Modal
 
@@ -225,7 +225,7 @@ import { PytronModal } from 'pytron-ui/react';
 </PytronModal>
 ```
 # example
-![Modal](https://raw.githubusercontent.com/Ghua8088/pytron-UI/main/modal.png)
+![Modal](https://raw.githubusercontent.com/Ghua8088/pytron-UI/master/modal.png)
 
 ### Providers
 
@@ -247,4 +247,4 @@ const theme = {
 </ThemeProvider>
 ```
 # example
-![Providers](https://raw.githubusercontent.com/Ghua8088/pytron-UI/main/providers.png)
+![Providers](https://raw.githubusercontent.com/Ghua8088/pytron-UI/master/providers.png)
