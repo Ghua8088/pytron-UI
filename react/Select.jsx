@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import { ChevronDown } from 'lucide-react';
 
 const Select = ({ options = [], value, onChange, placeholder = "Select...", style }) => {
@@ -17,6 +18,19 @@ const Select = ({ options = [], value, onChange, placeholder = "Select...", styl
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
+    const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0, width: 0 });
+
+    useEffect(() => {
+        if (isOpen && containerRef.current) {
+            const rect = containerRef.current.getBoundingClientRect();
+            setDropdownPos({
+                top: rect.bottom + window.scrollY,
+                left: rect.left + window.scrollX,
+                width: rect.width
+            });
+        }
+    }, [isOpen]);
+
     return (
         <div ref={containerRef} style={{ position: 'relative', width: '100%', minWidth: '150px', ...style }}>
             {/* Trigger */}
@@ -33,7 +47,8 @@ const Select = ({ options = [], value, onChange, placeholder = "Select...", styl
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    transition: 'border-color 0.2s'
+                    transition: 'border-color 0.2s',
+                    zIndex: 999,
                 }}
             >
                 <span style={{ color: selectedOption ? 'inherit' : '#aaa' }}>
@@ -42,19 +57,18 @@ const Select = ({ options = [], value, onChange, placeholder = "Select...", styl
                 <ChevronDown size={16} />
             </div>
 
-            {/* Dropdown */}
-            {isOpen && (
+            {/* Dropdown in Portal */}
+            {isOpen && ReactDOM.createPortal(
                 <div style={{
                     position: 'absolute',
-                    top: '100%',
-                    left: 0,
-                    right: 0,
-                    marginTop: '4px',
+                    top: dropdownPos.top + 4,
+                    left: dropdownPos.left,
+                    width: dropdownPos.width,
                     background: 'var(--pytron-surface, #2b2b2b)',
                     border: '1px solid var(--pytron-border, #454545)',
                     borderRadius: '4px',
                     boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
-                    zIndex: 1000,
+                    zIndex: 99999, /* Very high z-index */
                     maxHeight: '200px',
                     overflowY: 'auto'
                 }}>
@@ -86,7 +100,8 @@ const Select = ({ options = [], value, onChange, placeholder = "Select...", styl
                     {options.length === 0 && (
                         <div style={{ padding: '8px 12px', fontSize: '13px', color: '#aaa' }}>No options</div>
                     )}
-                </div>
+                </div>,
+                document.body
             )}
         </div>
     );

@@ -9,6 +9,10 @@
     "./react": "./react/index.js",
     "./web-components/*": "./web-components/*"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ghua8088/pytron-UI.git"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "echo \"Error: no build specified\" && exit 1"

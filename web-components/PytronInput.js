@@ -1,15 +1,15 @@
 import { LitElement, html, css } from 'lit';
 
 export class PytronInput extends LitElement {
-    static properties = {
-        label: { type: String },
-        value: { type: String },
-        placeholder: { type: String },
-        type: { type: String },
-        error: { type: String }
-    };
+  static properties = {
+    label: { type: String },
+    value: { type: String },
+    placeholder: { type: String },
+    type: { type: String },
+    error: { type: String }
+  };
 
-    static styles = css`
+  static styles = css`
     :host {
       display: flex;
       flex-direction: column;
@@ -35,6 +35,7 @@ export class PytronInput extends LitElement {
       transition: border-color 0.2s;
       width: 100%;
       box-sizing: border-box;
+      z-index:999;
     }
 
     input:focus {
@@ -51,34 +52,34 @@ export class PytronInput extends LitElement {
     }
   `;
 
-    constructor() {
-        super();
-        this.label = '';
-        this.value = '';
-        this.placeholder = '';
-        this.type = 'text';
-        this.error = '';
-    }
+  constructor() {
+    super();
+    this.label = '';
+    this.value = '';
+    this.placeholder = '';
+    this.type = 'text';
+    this.error = '';
+  }
 
-    _handleInput(e) {
-        this.value = e.target.value;
-        this.dispatchEvent(new CustomEvent('input', {
-            detail: { value: this.value },
-            bubbles: true,
-            composed: true
-        }));
-    }
+  _handleInput(e) {
+    this.value = e.target.value;
+    this.dispatchEvent(new CustomEvent('input', {
+      detail: { value: this.value },
+      bubbles: true,
+      composed: true
+    }));
+  }
 
-    _handleChange(e) {
-        this.dispatchEvent(new CustomEvent('change', {
-            detail: { value: this.value },
-            bubbles: true,
-            composed: true
-        }));
-    }
+  _handleChange(e) {
+    this.dispatchEvent(new CustomEvent('change', {
+      detail: { value: this.value },
+      bubbles: true,
+      composed: true
+    }));
+  }
 
-    render() {
-        return html`
+  render() {
+    return html`
       ${this.label ? html`<label>${this.label}</label>` : ''}
       <input 
         .type="${this.type}" 
@@ -89,7 +90,7 @@ export class PytronInput extends LitElement {
       />
       ${this.error ? html`<span class="error-msg">${this.error}</span>` : ''}
     `;
-    }
+  }
 }
 
 customElements.define('pytron-input', PytronInput);

@@ -1,9 +1,10 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 
 const Dialog = ({ isOpen, title, message, onConfirm, onCancel, confirmText = "OK", cancelText = "Cancel" }) => {
   if (!isOpen) return null;
 
-  return (
+  return ReactDOM.createPortal(
     <div style={{
       position: 'fixed',
       top: 0,
@@ -40,7 +41,8 @@ const Dialog = ({ isOpen, title, message, onConfirm, onCancel, confirmText = "OK
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 

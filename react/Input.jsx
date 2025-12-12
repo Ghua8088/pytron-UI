@@ -25,7 +25,8 @@ const Input = forwardRef(({ label, error, style, ...props }, ref) => {
                     outline: 'none',
                     transition: 'border-color 0.2s',
                     width: '100%',
-                    boxSizing: 'border-box'
+                    boxSizing: 'border-box',
+                    zIndex: 999,
                 }}
                 onFocus={(e) => {
                     if (!error) e.target.style.borderColor = 'var(--pytron-primary, #0078d4)';

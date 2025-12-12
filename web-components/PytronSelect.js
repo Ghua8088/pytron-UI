@@ -7,14 +7,14 @@ const ChevronIcon = html`
 `;
 
 export class PytronSelect extends LitElement {
-    static properties = {
-        options: { type: Array },
-        value: { type: String },
-        placeholder: { type: String },
-        isOpen: { type: Boolean, state: true }
-    };
+  static properties = {
+    options: { type: Array },
+    value: { type: String },
+    placeholder: { type: String },
+    isOpen: { type: Boolean, state: true }
+  };
 
-    static styles = css`
+  static styles = css`
     :host {
       display: block;
       position: relative;
@@ -82,49 +82,59 @@ export class PytronSelect extends LitElement {
     }
   `;
 
-    constructor() {
-        super();
-        this.options = [];
-        this.value = '';
-        this.placeholder = 'Select...';
-        this.isOpen = false;
-        this._handleOutsideClick = this._handleOutsideClick.bind(this);
+  constructor() {
+    super();
+    this.options = [];
+    this.value = '';
+    this.placeholder = 'Select...';
+    this.isOpen = false;
+    this._handleOutsideClick = this._handleOutsideClick.bind(this);
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    document.addEventListener('mousedown', this._handleOutsideClick);
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    document.removeEventListener('mousedown', this._handleOutsideClick);
+  }
+
+  _handleOutsideClick(e) {
+    if (this.isOpen && !this.contains(e.target)) {
+      this.isOpen = false;
     }
+  }
 
-    connectedCallback() {
-        super.connectedCallback();
-        document.addEventListener('mousedown', this._handleOutsideClick);
+  async _toggle() {
+    if (!this.isOpen) {
+      // Calculate Position before opening
+      const rect = this.shadowRoot.querySelector('.trigger').getBoundingClientRect();
+      this.dropdownStyle = `
+                top: ${rect.bottom + window.scrollY}px;
+                left: ${rect.left + window.scrollX}px;
+                width: ${rect.width}px;
+                position: fixed; /* Escape overflow containment */
+            `;
     }
+    this.isOpen = !this.isOpen;
+  }
 
-    disconnectedCallback() {
-        super.disconnectedCallback();
-        document.removeEventListener('mousedown', this._handleOutsideClick);
-    }
+  _select(value) {
+    this.value = value;
+    this.isOpen = false;
+    this.dispatchEvent(new CustomEvent('change', {
+      detail: { value: value },
+      bubbles: true,
+      composed: true
+    }));
+  }
 
-    _handleOutsideClick(e) {
-        if (this.isOpen && !this.contains(e.target)) {
-            this.isOpen = false;
-        }
-    }
+  render() {
+    const selectedOption = this.options.find(o => o.value === this.value);
 
-    _toggle() {
-        this.isOpen = !this.isOpen;
-    }
-
-    _select(value) {
-        this.value = value;
-        this.isOpen = false;
-        this.dispatchEvent(new CustomEvent('change', {
-            detail: { value: value },
-            bubbles: true,
-            composed: true
-        }));
-    }
-
-    render() {
-        const selectedOption = this.options.find(o => o.value === this.value);
-
-        return html`
+    return html`
       <div 
         class="trigger ${this.isOpen ? 'open' : ''}" 
         @click="${this._toggle}"
@@ -136,7 +146,7 @@ export class PytronSelect extends LitElement {
       </div>
 
       ${this.isOpen ? html`
-        <div class="dropdown">
+        <div class="dropdown" style="${this.dropdownStyle || ''}">
           ${this.options.length > 0 ? this.options.map(opt => html`
             <div 
               class="option ${opt.value === this.value ? 'selected' : ''}"
@@ -148,7 +158,7 @@ export class PytronSelect extends LitElement {
         </div>
       ` : ''}
     `;
-    }
+  }
 }
 
 customElements.define('pytron-select', PytronSelect);

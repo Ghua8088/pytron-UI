@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import ReactDOM from 'react-dom';
 
 const MenuBar = ({ menus, style }) => {
   // menus = [{ label: 'File', items: [{ label: 'Open', onClick: ... }] }]
@@ -18,9 +19,38 @@ const MenuBar = ({ menus, style }) => {
     };
   }, []);
 
+  // Calculate positions for portal
+  const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0 });
+
+  const handleMenuClick = (index, e) => {
+    // Toggle
+    if (activeMenu === index) {
+      setActiveMenu(null);
+    } else {
+      const rect = e.currentTarget.getBoundingClientRect();
+      setDropdownPos({
+        top: rect.bottom + window.scrollY,
+        left: rect.left + window.scrollX
+      });
+      setActiveMenu(index);
+    }
+  };
+
+  const handleMouseEnter = (index, e) => {
+    if (activeMenu !== null && activeMenu !== index) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      setDropdownPos({
+        top: rect.bottom + window.scrollY,
+        left: rect.left + window.scrollX
+      });
+      setActiveMenu(index);
+    }
+  };
+
   return (
     <div
       ref={menuRef}
+      onMouseDown={(e) => e.stopPropagation()} /* Prevent TitleBar drag */
       style={{
         display: 'flex',
         background: 'var(--pytron-bg, #333)',
@@ -34,10 +64,8 @@ const MenuBar = ({ menus, style }) => {
       {menus.map((menu, index) => (
         <div key={index} style={{ position: 'relative' }}>
           <div
-            onClick={() => setActiveMenu(activeMenu === index ? null : index)}
-            onMouseEnter={() => {
-              if (activeMenu !== null) setActiveMenu(index);
-            }}
+            onClick={(e) => handleMenuClick(index, e)}
+            onMouseEnter={(e) => handleMouseEnter(index, e)}
             style={{
               padding: '6px 10px',
               cursor: 'default',
@@ -46,22 +74,24 @@ const MenuBar = ({ menus, style }) => {
           >
             {menu.label}
           </div>
-          {activeMenu === index && (
+
+          {activeMenu === index && ReactDOM.createPortal(
             <div style={{
               position: 'absolute',
-              top: '100%',
-              left: 0,
+              top: dropdownPos.top,
+              left: dropdownPos.left,
               background: 'var(--pytron-surface, #2b2b2b)',
               border: '1px solid var(--pytron-border, #454545)',
               minWidth: '200px',
-              zIndex: 2000,
+              zIndex: 99999,
               boxShadow: '0 4px 8px rgba(0,0,0,0.4)',
               padding: '4px 0'
             }}>
               {menu.items.map((item, i) => (
                 <MenuItem key={i} item={item} closeMenu={() => setActiveMenu(null)} />
               ))}
-            </div>
+            </div>,
+            document.body
           )}
         </div>
       ))}

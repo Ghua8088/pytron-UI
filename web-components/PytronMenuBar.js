@@ -133,7 +133,7 @@ export class PytronMenuBar extends LitElement {
 
   render() {
     return html`
-      <div class="bar">
+      <div class="bar" @mousedown="${(e) => e.stopPropagation()}">
         ${this.menus.map((menu, index) => html`
           <div class="menu-wrapper">
              <div 
