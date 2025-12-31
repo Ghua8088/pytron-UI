@@ -15,6 +15,7 @@ export { default as PytronSnapGrid, default as SnapGrid } from './SnapGrid.jsx';
 export { default as PytronSwitch, default as Switch } from './Switch.jsx';
 export { default as PytronTabs, default as Tabs } from './Tabs.jsx';
 export { default as PytronTitleBar, default as TitleBar } from './TitleBar.jsx';
+export { ContextMenu as PytronContextMenu, ContextMenu } from './ContextMenu.jsx';
 
 // Named exports from Sidebar
 export {

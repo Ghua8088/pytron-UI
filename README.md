@@ -248,3 +248,45 @@ const theme = {
 ```
 # example
 ![Providers](https://raw.githubusercontent.com/Ghua8088/pytron-UI/master/providers.png)
+
+### ContextMenu
+
+A native-feeling context menu that replaces the default browser menu. Supports submenus, shortcuts, and custom styling.
+
+```jsx
+import { PytronContextMenu } from 'pytron-ui/react';
+
+// Basic usage - Drop in your App root
+<PytronContextMenu />
+
+// Custom Items
+const items = [
+  { label: 'Copy', shortcut: 'Ctrl+C', onClick: () => document.execCommand('copy') },
+  { type: 'divider' },
+  { label: 'Settings', onClick: openSettings }
+];
+
+<PytronContextMenu items={items} variant="windows" />
+```
+
+### ShortcutHandler
+
+An invisible component that handles global keyboard shortcuts and forwards them to the Python backend via `pytron-client`. By default, it blocks standard browser shortcuts like F5 and Ctrl+R to ensure a native app experience.
+
+```jsx
+import { PytronShortcutHandler } from 'pytron-ui/react';
+
+function App() {
+  return (
+    <>
+      {/* 
+        disableBrowserDefaults: Optional (default: true).
+        Prevents F5 and Ctrl/Cmd+R from refreshing the app.
+      */}
+      <PytronShortcutHandler disableBrowserDefaults={true} />
+      {/* ... rest of app */}
+    </>
+  );
+}
+```
+

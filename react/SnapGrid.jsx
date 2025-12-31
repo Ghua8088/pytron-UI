@@ -141,12 +141,19 @@ const SnapGrid = ({ onClose }) => {
                 <div onClick={() => snap('one-third-right')} className="snap-item" style={{ ...itemBase, flex: 1, borderRadius: '0 4px 4px 0' }}></div>
             </div>
 
-            {/* Row 3: Quarters */}
-            <div style={{ ...rowStyle, flexWrap: 'wrap', height: '100px' }}>
-                <div onClick={() => snap('top-left')} className="snap-item" style={{ ...itemBase, width: '48%', height: '48%', borderRadius: '4px 0 0 0' }}></div>
-                <div onClick={() => snap('top-right')} className="snap-item" style={{ ...itemBase, width: '48%', height: '48%', borderRadius: '0 4px 0 0' }}></div>
-                <div onClick={() => snap('bottom-left')} className="snap-item" style={{ ...itemBase, width: '48%', height: '48%', borderRadius: '0 0 0 4px' }}></div>
-                <div onClick={() => snap('bottom-right')} className="snap-item" style={{ ...itemBase, width: '48%', height: '48%', borderRadius: '0 0 4px 0' }}></div>
+            {/* Row 3: Quarters (2x2 Grid) */}
+            <div style={{
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr',
+                gridTemplateRows: '1fr 1fr',
+                gap: '6px',
+                height: '80px',
+                width: '100%'
+            }}>
+                <div onClick={() => snap('top-left')} className="snap-item" style={{ ...itemBase, borderRadius: '4px 0 0 0' }}></div>
+                <div onClick={() => snap('top-right')} className="snap-item" style={{ ...itemBase, borderRadius: '0 4px 0 0' }}></div>
+                <div onClick={() => snap('bottom-left')} className="snap-item" style={{ ...itemBase, borderRadius: '0 0 0 4px' }}></div>
+                <div onClick={() => snap('bottom-right')} className="snap-item" style={{ ...itemBase, borderRadius: '0 0 4px 0' }}></div>
             </div>
         </div>
     );

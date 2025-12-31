@@ -8,7 +8,8 @@ const TitleBar = ({ title = "Pytron App", children, variant = "windows", icon = 
   // variant: 'windows' | 'mac'
   const [isMaximized, setIsMaximized] = useState(false);
   const [showSnapMenu, setShowSnapMenu] = useState(false);
-  let hoverTimeout;
+  const hoverTimeout = React.useRef(null);
+  const hideTimeout = React.useRef(null);
 
   const handleDrag = async (e) => {
     // Only drag on left click (0)
@@ -32,15 +33,23 @@ const TitleBar = ({ title = "Pytron App", children, variant = "windows", icon = 
   };
 
   const handleMouseEnterMax = () => {
-    if (variant === 'mac') return; // Mac doesn't typically show snap grid on hover of maximize button like Windows 11
-    hoverTimeout = setTimeout(() => {
+    if (variant === 'mac') return;
+    if (hideTimeout.current) clearTimeout(hideTimeout.current);
+    hoverTimeout.current = setTimeout(() => {
       setShowSnapMenu(true);
     }, 500); // 500ms hover delay
   };
 
   const handleMouseLeaveMax = () => {
-    clearTimeout(hoverTimeout);
+    if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
+    hideTimeout.current = setTimeout(() => {
+      setShowSnapMenu(false);
+    }, 300); // Small grace period to move mouse to menu
   };
+
+  const handleMouseEnterMenu = () => {
+    if (hideTimeout.current) clearTimeout(hideTimeout.current);
+  }
 
   const handleMinimize = async () => {
     if (onMinimize) onMinimize();
@@ -146,7 +155,9 @@ const TitleBar = ({ title = "Pytron App", children, variant = "windows", icon = 
 
       {/* RENDER SNAP GRID IF HOVERED (Windows Only Logic mostly) */}
       {showSnapMenu && variant === 'windows' && (
-        <SnapGrid onClose={() => setShowSnapMenu(false)} />
+        <div onMouseEnter={handleMouseEnterMenu} style={{ position: 'relative' }}>
+          <SnapGrid onClose={() => setShowSnapMenu(false)} />
+        </div>
       )}
     </div>
   );

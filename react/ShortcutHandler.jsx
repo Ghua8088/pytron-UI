@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import pytron from 'pytron-client';
 
-const ShortcutHandler = () => {
+const ShortcutHandler = ({ disableBrowserDefaults = true }) => {
   useEffect(() => {
     let registeredShortcuts = [];
 
@@ -16,6 +16,14 @@ const ShortcutHandler = () => {
     };
 
     const handleKeyDown = async (e) => {
+      // 0. Prevent browser defaults if enabled
+      if (disableBrowserDefaults) {
+        // Block F5, Ctrl+R, Cmd+R
+        if (e.key === 'F5' || ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'r')) {
+          e.preventDefault();
+        }
+      }
+
       // Build key combo string
       const parts = [];
       if (e.ctrlKey) parts.push('Ctrl');
@@ -30,10 +38,8 @@ const ShortcutHandler = () => {
       parts.push(key);
       const combo = parts.join('+');
 
-      // Check if this combo is registered (optional optimization, but good to avoid spamming Python)
-      // We can also just send everything, but let's check if we have the list.
+      // Check if this combo is registered
       if (registeredShortcuts.length > 0 && !registeredShortcuts.includes(combo)) {
-        // Try alternative for Mac (Cmd vs Ctrl) if needed, but for now strict match
         return;
       }
 
@@ -48,17 +54,13 @@ const ShortcutHandler = () => {
       }
     };
 
-    // Initial fetch - pytron proxy will wait if needed (or we could use pytron.waitForBackend())
     fetchShortcuts();
-
-    // Also listen for re-connection or ready event if needed, but for now fetch once constitutes "mounted" behavior.
-
     window.addEventListener('keydown', handleKeyDown);
 
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, []);
+  }, [disableBrowserDefaults]);
 
   return null; // Invisible component
 };
