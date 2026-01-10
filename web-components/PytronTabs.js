@@ -74,4 +74,6 @@ export class PytronTabs extends LitElement {
     }
 }
 
-customElements.define('pytron-tabs', PytronTabs);
+if (!customElements.get('pytron-tabs')) {
+  customElements.define('pytron-tabs', PytronTabs);
+}

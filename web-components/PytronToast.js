@@ -195,4 +195,6 @@ export class PytronToaster extends LitElement {
   }
 }
 
-customElements.define('pytron-toaster', PytronToaster);
+if (!customElements.get('pytron-toaster')) {
+  customElements.define('pytron-toaster', PytronToaster);
+}

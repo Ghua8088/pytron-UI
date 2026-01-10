@@ -80,4 +80,6 @@ export class PytronButton extends LitElement {
   }
 }
 
-customElements.define('pytron-button', PytronButton);
+if (!customElements.get('pytron-button')) {
+  customElements.define('pytron-button', PytronButton);
+}

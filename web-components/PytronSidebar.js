@@ -133,6 +133,12 @@ export class PytronSidebarHeader extends LitElement {
     }
 }
 
-customElements.define('pytron-sidebar', PytronSidebar);
-customElements.define('pytron-sidebar-item', PytronSidebarItem);
-customElements.define('pytron-sidebar-header', PytronSidebarHeader);
+if (!customElements.get('pytron-sidebar')) {
+  customElements.define('pytron-sidebar', PytronSidebar);
+}
+if (!customElements.get('pytron-sidebar-item')) {
+  customElements.define('pytron-sidebar-item', PytronSidebarItem);
+}
+if (!customElements.get('pytron-sidebar-header')) {
+  customElements.define('pytron-sidebar-header', PytronSidebarHeader);
+}

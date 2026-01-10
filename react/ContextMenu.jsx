@@ -10,6 +10,7 @@ export const ContextMenu = ({ items = [], variant = 'windows', customStyles = {}
     const [visible, setVisible] = useState(false);
     const [position, setPosition] = useState({ x: 0, y: 0 });
     const menuRef = useRef(null);
+    const isAndroid = typeof navigator !== 'undefined' && /android/i.test(navigator.userAgent);
 
     const defaultItems = [
         { label: 'Copy', shortcut: 'Ctrl+C', onClick: () => document.execCommand('copy') },
@@ -58,7 +59,7 @@ export const ContextMenu = ({ items = [], variant = 'windows', customStyles = {}
         };
     }, [menuItems]);
 
-    if (!visible) return null;
+    if (isAndroid || !visible) return null;
 
     const isMac = variant === 'mac';
 

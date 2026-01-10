@@ -121,4 +121,6 @@ export class PytronDialog extends LitElement {
     }
 }
 
-customElements.define('pytron-dialog', PytronDialog);
+if (!customElements.get('pytron-dialog')) {
+  customElements.define('pytron-dialog', PytronDialog);
+}

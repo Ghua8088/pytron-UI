@@ -161,4 +161,6 @@ export class PytronSelect extends LitElement {
   }
 }
 
-customElements.define('pytron-select', PytronSelect);
+if (!customElements.get('pytron-select')) {
+  customElements.define('pytron-select', PytronSelect);
+}

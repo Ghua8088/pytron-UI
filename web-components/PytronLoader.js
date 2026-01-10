@@ -42,4 +42,6 @@ export class PytronLoader extends LitElement {
     }
 }
 
-customElements.define('pytron-loader', PytronLoader);
+if (!customElements.get('pytron-loader')) {
+  customElements.define('pytron-loader', PytronLoader);
+}

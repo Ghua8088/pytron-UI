@@ -87,4 +87,6 @@ export class PytronCard extends LitElement {
     }
 }
 
-customElements.define('pytron-card', PytronCard);
+if (!customElements.get('pytron-card')) {
+  customElements.define('pytron-card', PytronCard);
+}

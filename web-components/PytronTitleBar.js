@@ -8,7 +8,8 @@ export class PytronTitleBar extends LitElement {
     variant: { type: String }, // 'windows' | 'mac'
     icon: { type: String },
     isMaximized: { type: Boolean, state: true },
-    showSnapMenu: { type: Boolean, state: true }
+    showSnapMenu: { type: Boolean, state: true },
+    _isAndroid: { type: Boolean, state: true }
   };
 
   static styles = css`
@@ -115,6 +116,7 @@ export class PytronTitleBar extends LitElement {
     this.isMaximized = false;
     this.showSnapMenu = false;
     this._hoverTimeout = null;
+    this._isAndroid = typeof navigator !== 'undefined' && /android/i.test(navigator.userAgent);
   }
 
   // --- ACTIONS ---
@@ -174,6 +176,7 @@ export class PytronTitleBar extends LitElement {
   }
 
   render() {
+    if (this._isAndroid) return html``;
     return html`
       <div class="pytron-titlebar ${this.variant}">
         
@@ -232,4 +235,6 @@ export class PytronTitleBar extends LitElement {
   }
 }
 
-customElements.define('pytron-titlebar', PytronTitleBar);
+if (!customElements.get('pytron-titlebar')) {
+  customElements.define('pytron-titlebar', PytronTitleBar);
+}

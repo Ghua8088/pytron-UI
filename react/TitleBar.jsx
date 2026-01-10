@@ -11,7 +11,10 @@ const TitleBar = ({ title = "Pytron App", children, variant = "windows", icon = 
   const hoverTimeout = React.useRef(null);
   const hideTimeout = React.useRef(null);
 
+  const isAndroid = typeof navigator !== 'undefined' && /android/i.test(navigator.userAgent);
+
   const handleDrag = async (e) => {
+    if (isAndroid) return;
     // Only drag on left click (0)
     if (e.button === 0) {
       try {
@@ -132,6 +135,8 @@ const TitleBar = ({ title = "Pytron App", children, variant = "windows", icon = 
       </div>
     );
   };
+
+  if (isAndroid) return null;
 
   return (
     <div className={`pytron-titlebar ${variant}`}>

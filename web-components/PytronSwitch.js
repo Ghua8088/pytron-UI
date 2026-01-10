@@ -77,4 +77,6 @@ export class PytronSwitch extends LitElement {
     }
 }
 
-customElements.define('pytron-switch', PytronSwitch);
+if (!customElements.get('pytron-switch')) {
+  customElements.define('pytron-switch', PytronSwitch);
+}

@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import pytron from 'pytron-client';
 
 const ResizeHandles = () => {
+  const isAndroid = typeof navigator !== 'undefined' && /android/i.test(navigator.userAgent);
   const isResizing = useRef(false);
   const startPos = useRef({ x: 0, y: 0 });
   const startSize = useRef({ width: 0, height: 0 });
@@ -48,7 +49,7 @@ const ResizeHandles = () => {
     isResizing.current = true;
     direction.current = dir;
     startPos.current = { x: e.screenX, y: e.screenY };
-    
+
     // Get current size from backend for accuracy, or fallback to window.outerWidth
     if (pytron?.get_size) {
       const size = await pytron.get_size();
@@ -56,7 +57,7 @@ const ResizeHandles = () => {
     } else {
       startSize.current = { width: window.outerWidth, height: window.outerHeight };
     }
-    
+
     document.body.style.cursor = dir === 'se' ? 'nwse-resize' : (dir === 'e' ? 'ew-resize' : 'ns-resize');
   };
 
@@ -65,6 +66,8 @@ const ResizeHandles = () => {
     zIndex: 9999,
     userSelect: 'none'
   };
+
+  if (isAndroid) return null;
 
   return (
     <>

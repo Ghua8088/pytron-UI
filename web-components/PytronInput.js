@@ -93,4 +93,6 @@ export class PytronInput extends LitElement {
   }
 }
 
-customElements.define('pytron-input', PytronInput);
+if (!customElements.get('pytron-input')) {
+  customElements.define('pytron-input', PytronInput);
+}

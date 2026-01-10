@@ -145,4 +145,6 @@ export class PytronModal extends LitElement {
     }
 }
 
-customElements.define('pytron-modal', PytronModal);
+if (!customElements.get('pytron-modal')) {
+  customElements.define('pytron-modal', PytronModal);
+}

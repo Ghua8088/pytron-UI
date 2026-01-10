@@ -164,4 +164,6 @@ export class PytronSnapGrid extends LitElement {
     }
 }
 
-customElements.define('pytron-snap-grid', PytronSnapGrid);
+if (!customElements.get('pytron-snap-grid')) {
+  customElements.define('pytron-snap-grid', PytronSnapGrid);
+}

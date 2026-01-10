@@ -59,4 +59,6 @@ export class PytronShortcutHandler extends LitElement {
     }
 }
 
-customElements.define('pytron-shortcut-handler', PytronShortcutHandler);
+if (!customElements.get('pytron-shortcut-handler')) {
+  customElements.define('pytron-shortcut-handler', PytronShortcutHandler);
+}

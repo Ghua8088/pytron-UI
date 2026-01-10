@@ -73,4 +73,6 @@ export class PytronProgressBar extends LitElement {
     }
 }
 
-customElements.define('pytron-progress-bar', PytronProgressBar);
+if (!customElements.get('pytron-progress-bar')) {
+  customElements.define('pytron-progress-bar', PytronProgressBar);
+}

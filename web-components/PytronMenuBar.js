@@ -164,4 +164,6 @@ export class PytronMenuBar extends LitElement {
   }
 }
 
-customElements.define('pytron-menubar', PytronMenuBar);
+if (!customElements.get('pytron-menubar')) {
+  customElements.define('pytron-menubar', PytronMenuBar);
+}

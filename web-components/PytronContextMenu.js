@@ -1,15 +1,15 @@
 import { LitElement, html, css } from 'lit';
 
 export class PytronContextMenu extends LitElement {
-    static properties = {
-        visible: { type: Boolean },
-        x: { type: Number },
-        y: { type: Number },
-        items: { type: Array },
-        variant: { type: String } // 'windows' | 'mac'
-    };
+  static properties = {
+    visible: { type: Boolean },
+    x: { type: Number },
+    y: { type: Number },
+    items: { type: Array },
+    variant: { type: String } // 'windows' | 'mac'
+  };
 
-    static styles = css`
+  static styles = css`
     :host {
       --menu-bg: var(--pytron-bg-secondary, #252526);
       --menu-fg: var(--pytron-fg, #cccccc);
@@ -103,103 +103,108 @@ export class PytronContextMenu extends LitElement {
     }
   `;
 
-    constructor() {
-        super();
-        this.visible = false;
-        this.x = 0;
-        this.y = 0;
-        this.variant = 'windows';
-        this.items = [];
+  constructor() {
+    super();
+    this.visible = false;
+    this.x = 0;
+    this.y = 0;
+    this.variant = 'windows';
+    this.items = [];
+    this._isAndroid = typeof navigator !== 'undefined' && /android/i.test(navigator.userAgent);
 
-        this._handleOutsideClick = this._handleOutsideClick.bind(this);
-        this._handleContextMenu = this._handleContextMenu.bind(this);
+    this._handleOutsideClick = this._handleOutsideClick.bind(this);
+    this._handleContextMenu = this._handleContextMenu.bind(this);
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    if (this._isAndroid) return;
+    window.addEventListener('mousedown', this._handleOutsideClick);
+    window.addEventListener('contextmenu', this._handleContextMenu);
+    window.addEventListener('blur', () => this.hide());
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    window.removeEventListener('mousedown', this._handleOutsideClick);
+    window.removeEventListener('contextmenu', this._handleContextMenu);
+  }
+
+  _handleContextMenu(e) {
+    e.preventDefault();
+    this.show(e.clientX, e.clientY);
+  }
+
+  _handleOutsideClick(e) {
+    if (this.visible && !e.composedPath().includes(this)) {
+      this.hide();
     }
+  }
 
-    connectedCallback() {
-        super.connectedCallback();
-        window.addEventListener('mousedown', this._handleOutsideClick);
-        window.addEventListener('contextmenu', this._handleContextMenu);
-        window.addEventListener('blur', () => this.hide());
+  show(x, y) {
+    // Basic bounds checking to keep menu on screen
+    const menuWidth = 200;
+    const menuHeight = this.items.length * 30 + 20;
+
+    if (x + menuWidth > window.innerWidth) x -= menuWidth;
+    if (y + menuHeight > window.innerHeight) y -= menuHeight;
+
+    this.x = x;
+    this.y = y;
+    this.visible = true;
+
+    this.requestUpdate();
+  }
+
+  hide() {
+    this.visible = false;
+    this.requestUpdate();
+  }
+
+  _handleItemClick(item) {
+    if (item.action) {
+      item.action();
     }
+    this.dispatchEvent(new CustomEvent('item-click', { detail: item }));
+    this.hide();
+  }
 
-    disconnectedCallback() {
-        super.disconnectedCallback();
-        window.removeEventListener('mousedown', this._handleOutsideClick);
-        window.removeEventListener('contextmenu', this._handleContextMenu);
-    }
+  render() {
+    if (this._isAndroid) return html``;
+    const defaultItems = [
+      { label: 'Back', shortcut: 'Alt+Left', action: () => window.history.back() },
+      { label: 'Forward', shortcut: 'Alt+Right', action: () => window.history.forward() },
+      { label: 'Reload', shortcut: 'Ctrl+R', action: () => window.location.reload() },
+      { type: 'divider' },
+      { label: 'Copy', shortcut: 'Ctrl+C', action: () => document.execCommand('copy') },
+      { label: 'Paste', shortcut: 'Ctrl+V', action: () => document.execCommand('paste') },
+      { label: 'Select All', shortcut: 'Ctrl+A', action: () => document.execCommand('selectAll') },
+    ];
 
-    _handleContextMenu(e) {
-        e.preventDefault();
-        this.show(e.clientX, e.clientY);
-    }
+    const displayItems = this.items.length > 0 ? this.items : defaultItems;
 
-    _handleOutsideClick(e) {
-        if (this.visible && !e.composedPath().includes(this)) {
-            this.hide();
-        }
-    }
-
-    show(x, y) {
-        // Basic bounds checking to keep menu on screen
-        const menuWidth = 200;
-        const menuHeight = this.items.length * 30 + 20;
-
-        if (x + menuWidth > window.innerWidth) x -= menuWidth;
-        if (y + menuHeight > window.innerHeight) y -= menuHeight;
-
-        this.x = x;
-        this.y = y;
-        this.visible = true;
-
-        this.requestUpdate();
-    }
-
-    hide() {
-        this.visible = false;
-        this.requestUpdate();
-    }
-
-    _handleItemClick(item) {
-        if (item.action) {
-            item.action();
-        }
-        this.dispatchEvent(new CustomEvent('item-click', { detail: item }));
-        this.hide();
-    }
-
-    render() {
-        const defaultItems = [
-            { label: 'Back', shortcut: 'Alt+Left', action: () => window.history.back() },
-            { label: 'Forward', shortcut: 'Alt+Right', action: () => window.history.forward() },
-            { label: 'Reload', shortcut: 'Ctrl+R', action: () => window.location.reload() },
-            { type: 'divider' },
-            { label: 'Copy', shortcut: 'Ctrl+C', action: () => document.execCommand('copy') },
-            { label: 'Paste', shortcut: 'Ctrl+V', action: () => document.execCommand('paste') },
-            { label: 'Select All', shortcut: 'Ctrl+A', action: () => document.execCommand('selectAll') },
-        ];
-
-        const displayItems = this.items.length > 0 ? this.items : defaultItems;
-
-        return html`
+    return html`
       <div 
         class="menu-container ${this.variant} ${this.visible ? 'visible' : ''}"
         style="left: ${this.x}px; top: ${this.y}px; visibility: ${this.visible ? 'visible' : 'hidden'}"
       >
         ${displayItems.map(item => {
-            if (item.type === 'divider') {
-                return html`<div class="menu-item divider"></div>`;
-            }
-            return html`
+      if (item.type === 'divider') {
+        return html`<div class="menu-item divider"></div>`;
+      }
+      return html`
             <div class="menu-item" @click="${() => this._handleItemClick(item)}">
               ${item.icon ? html`<div class="icon">${item.icon}</div>` : ''}
               <div class="label">${item.label}</div>
               ${item.shortcut ? html`<div class="shortcut">${item.shortcut}</div>` : ''}
             </div>
           `;
-        })}
+    })}
       </div>
     `;
-    }
+  }
 }
 
-customElements.define('pytron-context-menu', PytronContextMenu);
+if (!customElements.get('pytron-context-menu')) {
+  customElements.define('pytron-context-menu', PytronContextMenu);
+}
