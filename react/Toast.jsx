@@ -5,7 +5,7 @@ import { X, CheckCircle, AlertCircle, Info, AlertTriangle } from 'lucide-react';
 
 const ToastContext = createContext(null);
 
-export const ToastProvider = ({ children }) => {
+export const ToastProvider = React.memo(({ children }) => {
     const [toasts, setToasts] = useState([]);
 
     // Listen for backend notifications
@@ -59,13 +59,13 @@ export const ToastProvider = ({ children }) => {
             <ToastContainer toasts={toasts} removeToast={removeToast} />
         </ToastContext.Provider>
     );
-};
+});
 
 export const useToast = () => useContext(ToastContext);
 
 // --- Internal Components ---
 
-const ToastContainer = ({ toasts, removeToast }) => {
+const ToastContainer = React.memo(({ toasts, removeToast }) => {
     return (
         <div style={{
             position: 'fixed',
@@ -84,9 +84,9 @@ const ToastContainer = ({ toasts, removeToast }) => {
             </AnimatePresence>
         </div>
     );
-};
+});
 
-const ToastItem = ({ toast, onClose }) => {
+const ToastItem = React.memo(({ toast, onClose }) => {
     let Icon = Info;
     let color = 'var(--pytron-primary, #0078d4)';
 
@@ -143,4 +143,4 @@ const ToastItem = ({ toast, onClose }) => {
             </button>
         </motion.div>
     );
-};
+});

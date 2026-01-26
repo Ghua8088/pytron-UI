@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState } from 'react';
 
 const SidebarContext = createContext(null);
 
-export const Sidebar = ({ children, style, width = '250px' }) => {
+export const Sidebar = React.memo(({ children, style, width = '250px' }) => {
     return (
         <div style={{
             width: width,
@@ -16,9 +16,9 @@ export const Sidebar = ({ children, style, width = '250px' }) => {
             {children}
         </div>
     );
-};
+});
 
-export const SidebarItem = ({ icon: Icon, label, active, onClick, badge }) => {
+export const SidebarItem = React.memo(({ icon: Icon, label, active, onClick, badge }) => {
     return (
         <div
             onClick={onClick}
@@ -58,7 +58,7 @@ export const SidebarItem = ({ icon: Icon, label, active, onClick, badge }) => {
             )}
         </div>
     );
-};
+});
 
 export const SidebarHeader = ({ children }) => (
     <div style={{ padding: '20px 16px', fontWeight: 600, fontSize: '12px', color: '#666', textTransform: 'uppercase', letterSpacing: '1px' }}>

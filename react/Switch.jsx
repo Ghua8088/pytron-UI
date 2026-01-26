@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-const Switch = ({ checked, onChange, label, style }) => {
+const Switch = React.memo(({ checked, onChange, label, style }) => {
     return (
         <div
             style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', ...style }}
@@ -33,6 +33,6 @@ const Switch = ({ checked, onChange, label, style }) => {
             {label && <span style={{ fontSize: '14px', color: 'var(--pytron-fg, #fff)' }}>{label}</span>}
         </div>
     );
-};
+});
 
 export default Switch;

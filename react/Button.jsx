@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Button = ({ children, onClick, variant = 'primary', style, ...props }) => {
+const Button = React.memo(({ children, onClick, variant = 'primary', style, ...props }) => {
   const baseStyle = {
     padding: '8px 16px',
     border: 'none',
@@ -28,6 +28,9 @@ const Button = ({ children, onClick, variant = 'primary', style, ...props }) => 
       {children}
     </button>
   );
-};
+});
+
+// Display name for React DevTools
+Button.displayName = 'Button';
 
 export default Button;

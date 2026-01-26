@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
 
-const MenuBar = ({ menus, style }) => {
+const MenuBar = React.memo(({ menus, style }) => {
   // menus = [{ label: 'File', items: [{ label: 'Open', onClick: ... }] }]
   const [activeMenu, setActiveMenu] = useState(null);
   const menuRef = useRef(null);
@@ -97,7 +97,7 @@ const MenuBar = ({ menus, style }) => {
       ))}
     </div>
   );
-};
+});
 
 const MenuItem = ({ item, closeMenu }) => {
   const [hover, setHover] = useState(false);

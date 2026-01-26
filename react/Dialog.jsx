@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-const Dialog = ({ isOpen, title, message, onConfirm, onCancel, confirmText = "OK", cancelText = "Cancel" }) => {
+const Dialog = React.memo(({ isOpen, title, message, onConfirm, onCancel, confirmText = "OK", cancelText = "Cancel" }) => {
   if (!isOpen) return null;
 
   return ReactDOM.createPortal(
@@ -44,7 +44,7 @@ const Dialog = ({ isOpen, title, message, onConfirm, onCancel, confirmText = "OK
     </div>,
     document.body
   );
-};
+});
 
 const buttonStyle = {
   padding: '8px 16px',

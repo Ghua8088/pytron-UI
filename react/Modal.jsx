@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 
-const Modal = ({ isOpen, onClose, title, children, footer, width = '500px' }) => {
+const Modal = React.memo(({ isOpen, onClose, title, children, footer, width = '500px' }) => {
     const [visible, setVisible] = useState(false);
 
     useEffect(() => {
@@ -99,6 +99,6 @@ const Modal = ({ isOpen, onClose, title, children, footer, width = '500px' }) =>
         </div>,
         document.body
     );
-};
+});
 
 export default Modal;

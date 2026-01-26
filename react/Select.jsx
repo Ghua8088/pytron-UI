@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { ChevronDown } from 'lucide-react';
 
-const Select = ({ options = [], value, onChange, placeholder = "Select...", style }) => {
+const Select = React.memo(({ options = [], value, onChange, placeholder = "Select...", style }) => {
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef(null);
 
@@ -105,6 +105,6 @@ const Select = ({ options = [], value, onChange, placeholder = "Select...", styl
             )}
         </div>
     );
-};
+});
 
 export default Select;

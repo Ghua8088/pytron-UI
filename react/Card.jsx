@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Card = ({ children, title, footer, style, onClick }) => {
+const Card = React.memo(({ children, title, footer, style, onClick }) => {
     return (
         <div
             onClick={onClick}
@@ -44,6 +44,6 @@ const Card = ({ children, title, footer, style, onClick }) => {
             )}
         </div>
     );
-};
+});
 
 export default Card;

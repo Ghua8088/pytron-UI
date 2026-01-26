@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ProgressBar = ({ value = 0, max = 100, color, height = '4px', showLabel = false, style }) => {
+const ProgressBar = React.memo(({ value = 0, max = 100, color, height = '4px', showLabel = false, style }) => {
     const percentage = Math.min(100, Math.max(0, (value / max) * 100));
 
     return (
@@ -34,6 +34,6 @@ const ProgressBar = ({ value = 0, max = 100, color, height = '4px', showLabel = 
             </div>
         </div>
     );
-};
+});
 
 export default ProgressBar;

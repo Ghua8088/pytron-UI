@@ -2,7 +2,7 @@
 import React from 'react';
 import pytron from 'pytron-client';
 
-const SnapGrid = ({ onClose }) => {
+const SnapGrid = React.memo(({ onClose }) => {
 
     const snap = async (type) => {
         // 1. GET SCALING FACTOR (Crucial for 125%/150% screens)
@@ -157,6 +157,6 @@ const SnapGrid = ({ onClose }) => {
             </div>
         </div>
     );
-};
+});
 
 export default SnapGrid;

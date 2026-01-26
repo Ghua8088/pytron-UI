@@ -6,7 +6,7 @@ import './TitleBar.css';
  * 
  * Provides a native-feeling context menu that replaces the default browser menu.
  */
-export const ContextMenu = ({ items = [], variant = 'windows', customStyles = {} }) => {
+export const ContextMenu = React.memo(({ items = [], variant = 'windows', customStyles = {} }) => {
     const [visible, setVisible] = useState(false);
     const [position, setPosition] = useState({ x: 0, y: 0 });
     const menuRef = useRef(null);
@@ -134,4 +134,4 @@ export const ContextMenu = ({ items = [], variant = 'windows', customStyles = {}
             ))}
         </div>
     );
-};
+});

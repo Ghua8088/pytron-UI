@@ -32,3 +32,6 @@ export { ToastProvider, useToast, useToast as PytronToaster } from './Toast.jsx'
 
 // Hooks
 export { default as usePytron } from './hooks/usePytron.js';
+
+// Secure Environment Components
+export { ExitOverlay, SecureBadge } from './SecureOverlay.jsx';

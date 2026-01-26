@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import pytron from 'pytron-client';
 
-const ResizeHandles = () => {
+const ResizeHandles = React.memo(() => {
   const isAndroid = typeof navigator !== 'undefined' && /android/i.test(navigator.userAgent);
   const isResizing = useRef(false);
   const startPos = useRef({ x: 0, y: 0 });
@@ -110,6 +110,6 @@ const ResizeHandles = () => {
       />
     </>
   );
-};
+});
 
 export default ResizeHandles;

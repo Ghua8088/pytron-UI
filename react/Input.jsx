@@ -1,6 +1,6 @@
 import React, { forwardRef } from 'react';
 
-const Input = forwardRef(({ label, error, style, ...props }, ref) => {
+const Input = React.memo(forwardRef(({ label, error, style, ...props }, ref) => {
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', ...style }}>
             {label && (
@@ -45,6 +45,6 @@ const Input = forwardRef(({ label, error, style, ...props }, ref) => {
             )}
         </div>
     );
-});
+}));
 
 export default Input;

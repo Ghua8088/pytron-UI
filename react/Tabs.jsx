@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const Tabs = ({ tabs = [], activeTab, onChange, style }) => {
+const Tabs = React.memo(({ tabs = [], activeTab, onChange, style }) => {
     // tabs = [{ id: 'tab1', label: 'Tab 1' }, ...]
 
     return (
@@ -40,6 +40,6 @@ const Tabs = ({ tabs = [], activeTab, onChange, style }) => {
             </div>
         </div>
     );
-};
+});
 
 export default Tabs;

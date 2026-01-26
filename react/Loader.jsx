@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Loader = ({ size = 24, color, style }) => {
+const Loader = React.memo(({ size = 24, color, style }) => {
     const spinnerColor = color || 'var(--pytron-primary, #0078d4)';
 
     return (
@@ -23,6 +23,6 @@ const Loader = ({ size = 24, color, style }) => {
             }} />
         </div>
     );
-};
+});
 
 export default Loader;

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import pytron from 'pytron-client';
-
-const ShortcutHandler = ({ disableBrowserDefaults = true }) => {
+import React from 'react';
+const ShortcutHandler = React.memo(({ disableBrowserDefaults = true }) => {
   useEffect(() => {
     let registeredShortcuts = [];
 
@@ -63,6 +63,6 @@ const ShortcutHandler = ({ disableBrowserDefaults = true }) => {
   }, [disableBrowserDefaults]);
 
   return null; // Invisible component
-};
+});
 
 export default ShortcutHandler;

@@ -16,7 +16,7 @@ const defaultTheme = {
 
 const ThemeContext = createContext(defaultTheme);
 
-export const ThemeProvider = ({ theme = {}, children }) => {
+export const ThemeProvider = React.memo(({ theme = {}, children }) => {
   const [currentTheme, setCurrentTheme] = useState(defaultTheme);
 
   useEffect(() => {
@@ -65,6 +65,6 @@ export const ThemeProvider = ({ theme = {}, children }) => {
       {children}
     </ThemeContext.Provider>
   );
-};
+});
 
 export const useTheme = () => useContext(ThemeContext);

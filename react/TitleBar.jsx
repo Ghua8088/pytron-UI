@@ -4,7 +4,7 @@ import './TitleBar.css';
 import SnapGrid from './SnapGrid';
 import pytron from 'pytron-client';
 
-const TitleBar = ({ title = "Pytron App", children, variant = "windows", icon = "🐍", onMinimize, onMaximize, onClose }) => {
+const TitleBar = React.memo(({ title = "Pytron App", children, variant = "windows", icon = "🐍", onMinimize, onMaximize, onClose }) => {
   // variant: 'windows' | 'mac'
   const [isMaximized, setIsMaximized] = useState(false);
   const [showSnapMenu, setShowSnapMenu] = useState(false);
@@ -13,7 +13,7 @@ const TitleBar = ({ title = "Pytron App", children, variant = "windows", icon = 
 
   const isAndroid = typeof navigator !== 'undefined' && /android/i.test(navigator.userAgent);
 
-  const handleDrag = async (e) => {
+  const handleDrag = React.useCallback(async (e) => {
     if (isAndroid) return;
     // Only drag on left click (0)
     if (e.button === 0) {
@@ -33,28 +33,28 @@ const TitleBar = ({ title = "Pytron App", children, variant = "windows", icon = 
         console.warn('[Pytron] Drag call failed:', err);
       }
     }
-  };
+  }, [isAndroid]);
 
-  const handleMouseEnterMax = () => {
+  const handleMouseEnterMax = React.useCallback(() => {
     if (variant === 'mac') return;
     if (hideTimeout.current) clearTimeout(hideTimeout.current);
     hoverTimeout.current = setTimeout(() => {
       setShowSnapMenu(true);
     }, 500); // 500ms hover delay
-  };
+  }, [variant]);
 
-  const handleMouseLeaveMax = () => {
+  const handleMouseLeaveMax = React.useCallback(() => {
     if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
     hideTimeout.current = setTimeout(() => {
       setShowSnapMenu(false);
     }, 300); // Small grace period to move mouse to menu
-  };
+  }, []);
 
-  const handleMouseEnterMenu = () => {
+  const handleMouseEnterMenu = React.useCallback(() => {
     if (hideTimeout.current) clearTimeout(hideTimeout.current);
-  }
+  }, []);
 
-  const handleMinimize = async () => {
+  const handleMinimize = React.useCallback(async () => {
     if (onMinimize) onMinimize();
     try {
       if (pytron && typeof pytron.waitForBackend === 'function') {
@@ -65,9 +65,9 @@ const TitleBar = ({ title = "Pytron App", children, variant = "windows", icon = 
     } catch (err) {
       console.warn('[Pytron] Minimize call failed:', err);
     }
-  };
+  }, [onMinimize]);
 
-  const handleClose = async () => {
+  const handleClose = React.useCallback(async () => {
     if (onClose) onClose();
     try {
       if (pytron && typeof pytron.waitForBackend === 'function') {
@@ -78,9 +78,9 @@ const TitleBar = ({ title = "Pytron App", children, variant = "windows", icon = 
     } catch (err) {
       console.warn('[Pytron] Close call failed:', err);
     }
-  };
+  }, [onClose]);
 
-  const handleMaximize = async () => {
+  const handleMaximize = React.useCallback(async () => {
     if (onMaximize) onMaximize();
     try {
       if (pytron && typeof pytron.waitForBackend === 'function') {
@@ -91,11 +91,11 @@ const TitleBar = ({ title = "Pytron App", children, variant = "windows", icon = 
     } catch (err) {
       console.warn('[Pytron] Toggle maximize failed:', err);
     }
-    setIsMaximized(!isMaximized);
-  }
+    setIsMaximized(prev => !prev);
+  }, [onMaximize]);
 
   // Define Controls Component for reusability
-  const WindowControls = ({ type }) => {
+  const WindowControls = React.useMemo(() => ({ type }) => {
     if (type === 'mac') {
       return (
         <div className="window-controls mac" onMouseDown={(e) => e.stopPropagation()}>
@@ -134,7 +134,7 @@ const TitleBar = ({ title = "Pytron App", children, variant = "windows", icon = 
         </div>
       </div>
     );
-  };
+  }, [handleClose, handleMinimize, handleMaximize, handleMouseEnterMax, handleMouseLeaveMax]);
 
   if (isAndroid) return null;
 
@@ -166,6 +166,6 @@ const TitleBar = ({ title = "Pytron App", children, variant = "windows", icon = 
       )}
     </div>
   );
-};
+});
 
 export default TitleBar;
