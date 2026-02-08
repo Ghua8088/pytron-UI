@@ -4,7 +4,7 @@ import './TitleBar.css';
 import SnapGrid from './SnapGrid';
 import pytron from 'pytron-client';
 
-const TitleBar = React.memo(({ title = "Pytron App", children, variant = "windows", icon = "🐍", onMinimize, onMaximize, onClose }) => {
+const TitleBar = React.memo(({ title = "Pytron App", children, variant = "windows", icon = "", onMinimize, onMaximize, onClose }) => {
   // variant: 'windows' | 'mac'
   const [isMaximized, setIsMaximized] = useState(false);
   const [showSnapMenu, setShowSnapMenu] = useState(false);
@@ -24,8 +24,8 @@ const TitleBar = React.memo(({ title = "Pytron App", children, variant = "window
         }
         if (pytron && typeof pytron.drag === 'function') {
           await pytron.drag();
-        } else if (typeof window.pytron_drag === 'function') {
-          await window.pytron_drag();
+        } else if (typeof pytron_drag === 'function') {
+          await pytron_drag();
         } else {
           console.warn('[TitleBar] drag backend not available');
         }
@@ -61,7 +61,7 @@ const TitleBar = React.memo(({ title = "Pytron App", children, variant = "window
         try { await pytron.waitForBackend(2000); } catch (e) { /* ignore */ }
       }
       if (pytron?.minimize) await pytron.minimize();
-      else if (typeof window.pytron_minimize === 'function') await window.pytron_minimize();
+      else if (typeof pytron_minimize === 'function') await pytron_minimize();
     } catch (err) {
       console.warn('[Pytron] Minimize call failed:', err);
     }
@@ -74,7 +74,7 @@ const TitleBar = React.memo(({ title = "Pytron App", children, variant = "window
         try { await pytron.waitForBackend(2000); } catch (e) { /* ignore */ }
       }
       if (pytron?.close) await pytron.close();
-      else if (typeof window.pytron_close === 'function') await window.pytron_close();
+      else if (typeof pytron_close === 'function') await pytron_close();
     } catch (err) {
       console.warn('[Pytron] Close call failed:', err);
     }
@@ -87,7 +87,7 @@ const TitleBar = React.memo(({ title = "Pytron App", children, variant = "window
         try { await pytron.waitForBackend(2000); } catch (e) { /* ignore */ }
       }
       if (pytron?.toggle_maximize) await pytron.toggle_maximize();
-      else if (typeof window.pytron_toggle_maximize === 'function') await window.pytron_toggle_maximize();
+      else if (typeof pytron_toggle_maximize === 'function') await pytron_toggle_maximize();
     } catch (err) {
       console.warn('[Pytron] Toggle maximize failed:', err);
     }
@@ -140,27 +140,35 @@ const TitleBar = React.memo(({ title = "Pytron App", children, variant = "window
 
   return (
     <div className={`pytron-titlebar ${variant}`}>
-      {/* 1. CONSTROLS (Left for Mac) */}
-      {variant === 'mac' && <WindowControls type="mac" />}
+      {/* 1. LEFT SECTION: Icon, Children, or Controls (Mac) */}
+      <div className="titlebar-left" onMouseDown={handleDrag}>
+        {/* Render Controls first on Mac */}
+        {variant === 'mac' && <WindowControls type="mac" />}
 
-      {/* 2. Drag Area (Title + Icon + Children) */}
-      <div className="drag-region" onMouseDown={handleDrag}>
-        {/* If Mac, we usually don't show the icon next to traffic lights, but we can if title requires it.
-            For now, let's keep the optional icon. */}
-        {variant !== 'mac' && <span style={{ marginRight: 8 }}>{icon}</span>}
+        {/* Render Icon (if not Mac) */}
+        {variant !== 'mac' && (
+          <div className="app-icon" style={{ marginLeft: variant === 'mac' ? 8 : 0 }}>
+            {icon}
+          </div>
+        )}
 
-        <span style={{ fontWeight: variant === 'mac' ? '600' : '400' }}>{title}</span>
-
-        {/* Render children (Search bars, menubars, etc) */}
+        {/* Render Children (Menu, etc) */}
         {children}
       </div>
 
-      {/* 3. CONTROLS (Right for Windows) */}
-      {variant === 'windows' && <WindowControls type="windows" />}
+      {/* 2. CENTER SECTION: Title */}
+      <div className="titlebar-center">
+        <span>{title}</span>
+      </div>
+
+      {/* 3. RIGHT SECTION: Controls (Windows) */}
+      <div className="titlebar-right">
+        {variant === 'windows' && <WindowControls type="windows" />}
+      </div>
 
       {/* RENDER SNAP GRID IF HOVERED (Windows Only Logic mostly) */}
       {showSnapMenu && variant === 'windows' && (
-        <div onMouseEnter={handleMouseEnterMenu} style={{ position: 'relative' }}>
+        <div onMouseEnter={handleMouseEnterMenu} style={{ position: 'absolute', right: 0, top: '100%', zIndex: 10000 }}>
           <SnapGrid onClose={() => setShowSnapMenu(false)} />
         </div>
       )}

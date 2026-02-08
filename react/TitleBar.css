@@ -1,46 +1,100 @@
 /* src/components/TitleBar.css */
+:root {
+  --pytron-titlebar-height: 28px;
+  --pytron-titlebar-bg: rgba(30, 30, 30, 0.95);
+  --pytron-titlebar-fg: #e0e0e0;
+  --pytron-titlebar-border: rgba(255, 255, 255, 0.08);
+}
+
 .pytron-titlebar {
   width: 100%;
-  height: 38px;
-  background-color: var(--pytron-bg, #1e1e1e);
+  height: var(--pytron-titlebar-height);
+  background-color: var(--pytron-titlebar-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   display: flex;
   justify-content: space-between;
   align-items: center;
   position: relative;
   z-index: 9999;
   user-select: none;
-  color: var(--pytron-fg, #cccccc);
-  font-family: 'Segoe UI', sans-serif;
+  color: var(--pytron-titlebar-fg);
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', sans-serif;
   font-size: 13px;
-  border-bottom: 1px solid var(--pytron-border, #333);
+  border-bottom: 1px solid var(--pytron-titlebar-border);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.2s ease;
 }
 
-/* The drag region */
-.drag-region {
-  flex-grow: 1;
-  height: 100%;
+/* The drag region acts as the "Left" container in our new layout logic */
+.titlebar-left {
   display: flex;
   align-items: center;
-  padding-left: 12px;
-  overflow: visible;
-  /* Allow dropdowns/menus to overflow outside the titlebar */
+  height: 100%;
+  padding-left: 16px;
+  z-index: 2;
+  flex: 1;
+  /* Takes available space on the left */
   -webkit-app-region: drag;
-  /* Keep drag behaviour on the empty drag area */
+  gap: 12px;
 }
 
-/* Interactive children inside the drag region must opt-out of dragging so menus/buttons are clickable */
-.drag-region button,
-.drag-region input,
-.drag-region a,
-.drag-region select,
-.drag-region textarea,
-.drag-region [role="menu"],
-.drag-region [role="menuitem"],
-.drag-region .menu,
-.drag-region .menubar,
-.drag-region .menu-item,
-.drag-region .dropdown,
-.drag-region *[data-no-drag] {
+/* Mac specific left padding */
+.pytron-titlebar.mac .titlebar-left {
+  padding-left: 0;
+  /* Controls handle the padding */
+  gap: 8px;
+}
+
+/* Absolute Centered Title */
+.titlebar-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  /* Behind controls but visible */
+  pointer-events: none;
+  /* Let clicks pass through to drag region if needed, though usually title isn't clickable */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  opacity: 0.9;
+  white-space: nowrap;
+  max-width: 40%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-app-region: drag;
+  /* Ensure title itself is draggable */
+}
+
+/* Right container for controls */
+.titlebar-right {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  z-index: 2;
+  flex: 0 0 auto;
+  /* Don't shrink */
+  -webkit-app-region: no-drag;
+}
+
+/* Interactive elements inside drag regions */
+.titlebar-left button,
+.titlebar-left input,
+.titlebar-left a,
+.titlebar-left select,
+.titlebar-left textarea,
+.titlebar-left [role="menu"],
+.titlebar-left [role="menuitem"],
+.titlebar-left .menu,
+.titlebar-left .menu-bar,
+.titlebar-left .menu-item,
+.titlebar-left .dropdown,
+.titlebar-left .icon-wrapper,
+.titlebar-left *[data-no-drag] {
   -webkit-app-region: no-drag;
 }
 
@@ -49,26 +103,26 @@
   display: flex;
   height: 100%;
   -webkit-app-region: no-drag;
-  z-index: 2000;
 }
 
 .control-btn {
-  width: 46px;
+  width: 48px;
   height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  transition: background 0.1s;
+  transition: all 0.15s ease-in-out;
+  color: #a0a0a0;
 }
 
 .control-btn:hover {
-  background-color: var(--pytron-secondary, #333333);
+  background-color: rgba(255, 255, 255, 0.08);
+  color: #fff;
 }
 
 .control-btn.close:hover {
-  background-color: var(--pytron-danger, #e81123);
-  /* Windows Red */
+  background-color: #e81123;
   color: white;
 }
 
@@ -77,68 +131,61 @@
   width: 10px;
   height: 10px;
   fill: currentColor;
+  opacity: 0.9;
 }
-
 
 /* --- Mac Style Controls --- */
-.pytron-titlebar.mac {
-  padding-left: 10px;
-  /* Space for traffic lights on left */
-  /* If title is centered, we might need different logic, but default flex acts okay */
-}
-
-.pytron-titlebar.mac .window-controls.mac {
+.window-controls.mac {
   display: flex;
   gap: 8px;
   align-items: center;
-  padding-right: 12px;
+  padding-left: 14px;
+  padding-right: 8px;
   height: 100%;
+  opacity: 1;
+  transition: opacity 0.2s;
 }
 
+/* Traffic Lights */
 .mac-btn {
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  border: none;
+  border: 0.5px solid rgba(0, 0, 0, 0.1);
   display: flex;
   justify-content: center;
   align-items: center;
-  cursor: pointer;
+  cursor: default;
   position: relative;
   overflow: hidden;
 }
 
 .mac-btn .icon {
   display: none;
-  /* Hide icons by default on mac, show on hover usually, or just colors */
-  width: 8px;
-  height: 8px;
-  fill: rgba(0, 0, 0, 0.6);
+  width: 7px;
+  height: 7px;
+  fill: rgba(0, 0, 0, 0.5);
 }
 
-.mac-btn:hover .icon {
+.window-controls.mac:hover .mac-btn .icon {
   display: block;
 }
 
-/* Colors - Mac colors are fairly standard so maybe keep them fixed or provide specific vars? 
-   Let's keep them fixed for now as they are OS standard, but allow overrides if one really wants.
-*/
 .mac-btn.close {
   background-color: #ff5f56;
-  border: 1px solid #e0443e;
+  border-color: #e0443e;
 }
 
 .mac-btn.minimize {
   background-color: #ffbd2e;
-  border: 1px solid #dea123;
+  border-color: #dea123;
 }
 
 .mac-btn.maximize {
   background-color: #27c93f;
-  border: 1px solid #1aab29;
+  border-color: #1aab29;
 }
 
-/* Hover States (slightly darker or active look) */
 .mac-btn.close:active {
   background-color: #bf4c45;
 }
@@ -151,8 +198,11 @@
   background-color: #1f9f31;
 }
 
-/* Mac title alignment shifts */
-.pytron-titlebar.mac .drag-region {
-  padding-left: 4px;
-  /* Less padding since controls are there */
+.app-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 4px;
+  font-size: 16px;
+  filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.3));
 }

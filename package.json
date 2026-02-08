@@ -1,6 +1,6 @@
 {
   "name": "pytron-ui",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "UI components for Pytron applications",
   "type": "module",
   "main": "web-components/index.js",
